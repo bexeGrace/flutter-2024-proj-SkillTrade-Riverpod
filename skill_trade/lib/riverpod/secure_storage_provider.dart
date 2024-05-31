@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SecureStorageService {
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
-  // Singleton pattern
   static final SecureStorageService _instance = SecureStorageService._internal();
   factory SecureStorageService() => _instance;
   SecureStorageService._internal();

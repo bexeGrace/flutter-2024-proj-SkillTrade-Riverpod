@@ -1,16 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:skill_trade/models/booking.dart';
 import 'package:skill_trade/models/review.dart';
-import 'package:skill_trade/models/technician.dart';
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skill_trade/riverpod/secure_storage_provider.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 
 
 import '../ip_info.dart';
-// Assuming Review and SecureStorageService are defined elsewhere
 class ReviewsState {
   final bool isLoading;
   final bool isSuccess;
@@ -40,7 +35,6 @@ class ReviewsState {
 }
 
 
-// Assuming Review and SecureStorageService are defined elsewhere
 class ReviewsNotifier extends StateNotifier<ReviewsState> {
   final SecureStorageService _secureStorageService;
   int? _technicianId;
@@ -62,12 +56,9 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
         },
       );
 
-      print("fetched reviews $response ${response.statusCode}");
-
       if (response.statusCode == 200) {
 
         final  List<dynamic> data = jsonDecode(response.body);
-        print("fetched reviews data $data");
 
         final reviews = data.map((json) {
           Map<String, dynamic> cur = {
@@ -79,7 +70,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
           };
           return Review.fromJson(cur);
         }).toList();
-        print(reviews);
 
         state = state.copyWith(isLoading: false, isSuccess: true, reviews: reviews);
       } else {
@@ -95,7 +85,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
 
     try {
       final token = await _secureStorageService.read("token");
-      print("updating review $review, $id");
       final response = await http.patch(
         Uri.parse('http://$endpoint:9000/review-rate/$id'),
         headers: {
@@ -105,7 +94,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
         },
         body: jsonEncode(review),
       );
-      print("update response ${response.statusCode}, $response");
 
       if (response.statusCode == 200) {
         await fetchReviews(_technicianId);
@@ -126,8 +114,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
         throw Exception("no customer no review");
       }
 
-
-      print("creating review $review");
       final response = await http.post(
         Uri.parse('http://$endpoint:9000/review-rate/technician/${technicianId}'),
         headers: {
@@ -141,7 +127,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
           "customerId": int.parse(id)
         }),
       );
-      print("create response ${response.statusCode}, $response, ${response.body}");
 
       if (response.statusCode == 201) {
         await fetchReviews(_technicianId);
@@ -157,7 +142,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final token = await _secureStorageService.read("token");
-      print("deleting review $id");
       final response = await http.delete(
         Uri.parse('http://$endpoint:9000/review-rate/$id'),
         headers: {
@@ -166,7 +150,6 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
           'Authorization': 'Bearer $token',
         },
       );
-      print("delete response ${response.statusCode}, $response");
 
       if (response.statusCode == 200) {
         await fetchReviews(technicianId);
@@ -200,13 +183,9 @@ final fetchReviewProvider = FutureProvider.family<List<Review>, int>((ref, int? 
         },
       );
 
-      // print("fetched reviews $response");
-      print("fetched reviews $response ${response.statusCode}");
-
       if (response.statusCode == 200) {
 
         final  List<dynamic> data = jsonDecode(response.body);
-        print("fetched reviews data $data");
 
         final reviews = data.map((json) {
           Map<String, dynamic> cur = {
@@ -218,8 +197,6 @@ final fetchReviewProvider = FutureProvider.family<List<Review>, int>((ref, int? 
           };
           return Review.fromJson(cur);
         }).toList();
-        print("yohoo");
-        print(reviews);
         return reviews;
       } else {
         throw Exception('Failed to load reviews');
