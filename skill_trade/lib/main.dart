@@ -12,13 +12,12 @@ import 'package:skill_trade/presentation/screens/login_page.dart';
 import 'package:skill_trade/presentation/screens/signup_page.dart';
 import 'package:skill_trade/presentation/screens/technician_application_success.dart';
 import 'package:skill_trade/presentation/themes.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 import 'package:skill_trade/technician.dart';
 import 'package:skill_trade/riverpod/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-   runApp(const ProviderScope(
+  runApp(const ProviderScope(
     child: MyApp(),
   ));
 }
@@ -30,14 +29,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
-      theme: lightMode,
-      debugShowCheckedModeBanner: false,
-      routerConfig: _router
-    );
+        title: 'Flutter Demo',
+        theme: lightMode,
+        debugShowCheckedModeBanner: false,
+        routerConfig: _router);
   }
 }
-
 
 final GoRouter _router = GoRouter(
   routes: [
@@ -48,17 +45,18 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/admintech',
       builder: (context, state) {
-          final technicianId = state.extra as int;
-          return  AdminTechnician(technicianId: technicianId,);
-         
-        },
+        final technicianId = state.extra as int;
+        return AdminTechnician(
+          technicianId: technicianId,
+        );
+      },
     ),
     GoRoute(
       path: '/admincustomer',
       builder: (context, state) {
-          final customer = state.extra as Customer;
-          return AdminCustomer(customer: customer);
-        },
+        final customer = state.extra as Customer;
+        return AdminCustomer(customer: customer);
+      },
     ),
     GoRoute(
       path: '/login',
@@ -70,27 +68,27 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/customer',
-      builder: (context, state) => CustomerPage(),
+      builder: (context, state) => const CustomerPage(),
     ),
     GoRoute(
       path: '/technician',
-      builder: (context, state) => TechnicianPage(),
+      builder: (context, state) => const TechnicianPage(),
     ),
     GoRoute(
       path: '/admin',
-      builder: (context, state) => AdminSite(),
+      builder: (context, state) => const AdminSite(),
     ),
     GoRoute(
       path: '/apply',
-      builder: (context, state) => TechnicianApplicationSuccess(),
+      builder: (context, state) => const TechnicianApplicationSuccess(),
     ),
     GoRoute(
-        path: '/myBookings',
-        builder: (context, state) {
-          final technician = state.extra as Technician;
-          return MyBookings(technician: technician);
-        },
-      ),
+      path: '/myBookings',
+      builder: (context, state) {
+        final technician = state.extra as Technician;
+        return MyBookings(technician: technician);
+      },
+    ),
   ],
 );
 
@@ -114,21 +112,20 @@ class GetFirstPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer(
-        builder: (context, ref, child){
-          ref.read(authProvider.notifier);
-          final authState = ref.watch(authProvider);
+      builder: (context, ref, child) {
+        ref.read(authProvider.notifier);
+        final authState = ref.watch(authProvider);
 
-          print("main says token ${authState.token} auth ${authState.isAuthenticated}");
-          
-          
-          if (authState.isAuthenticated) {
-            return GetFirstPageLogic().getLoggedInPage(authState.role!);
-          } else {
-            return HomeScreen();
-          }
-        },
-      );
+        print(
+            "main says token ${authState.token} auth ${authState.isAuthenticated}");
+
+        if (authState.isAuthenticated) {
+          return GetFirstPageLogic().getLoggedInPage(authState.role!);
+        } else {
+          return const HomeScreen();
+        }
+      },
+    );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/customer.dart';
 import 'package:skill_trade/presentation/widgets/customer_profile.dart';
 
 class AdminCustomer extends ConsumerWidget {
@@ -9,7 +8,6 @@ class AdminCustomer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Customer"),
@@ -17,12 +15,13 @@ class AdminCustomer extends ConsumerWidget {
       ),
       body: ListView(
         children: [
-          if(customer == null)
-            Center(child: Text("There is no customer"),)
+          if (customer == null)
+            Center(
+              child: Text("There is no customer"),
+            )
           else
-          customerProfile(customer: customer)
+            customerProfile(customer: customer)
 
-          
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.center,
           //   children: [
@@ -58,7 +57,6 @@ class AdminCustomer extends ConsumerWidget {
           //   height: 30,
           // ),
           // const Padding(
-
         ],
       ),
     );
