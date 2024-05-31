@@ -12,7 +12,6 @@ import 'package:skill_trade/presentation/screens/login_page.dart';
 import 'package:skill_trade/presentation/screens/signup_page.dart';
 import 'package:skill_trade/presentation/screens/technician_application_success.dart';
 import 'package:skill_trade/presentation/themes.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 import 'package:skill_trade/technician.dart';
 import 'package:skill_trade/riverpod/auth_provider.dart';
 import 'package:go_router/go_router.dart';
