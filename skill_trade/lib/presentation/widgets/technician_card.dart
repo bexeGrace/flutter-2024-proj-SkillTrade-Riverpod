@@ -28,7 +28,7 @@ class TechnicianCard extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               subtitle: Text(
-                "Speciality: ${technician.specialty}",
+                "Specialty: ${technician.specialty}",
                 style: const TextStyle(fontSize: 17),
                 textAlign: TextAlign.center,
               ),

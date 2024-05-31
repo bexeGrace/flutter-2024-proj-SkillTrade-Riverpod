@@ -38,7 +38,7 @@ class _TechnicianBookingListState extends ConsumerState<TechnicianBookingList> {
         ),
         Expanded(
           child: bookingState.isLoading
-              ? Center(child: const CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : bookingState.errorMessage != null
                   ? Center(child: Text('Error: ${bookingState.errorMessage}'))
                   : ListView.builder(
@@ -62,7 +62,7 @@ class _TechnicianBookingListState extends ConsumerState<TechnicianBookingList> {
                             loading: () => const Center(
                                 child: CircularProgressIndicator()),
                             error: ((error, stackTrace) =>
-                                Text('Error loading customer: ${error}')));
+                                Text('Error loading customer: $error')));
                       },
                     ),
         ),

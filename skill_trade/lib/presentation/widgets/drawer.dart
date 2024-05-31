@@ -78,9 +78,9 @@ class MyDrawer extends ConsumerWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(left: 25.0, bottom: 25.0),
+            padding: const EdgeInsets.only(left: 25.0, bottom: 25.0),
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.logout,
                 color: Colors.white,
               ),
@@ -89,7 +89,7 @@ class MyDrawer extends ConsumerWidget {
                     ref.read(authProvider.notifier).logout();
                     context.push("/");
                   },
-                  child: Text(
+                  child: const Text(
                     "Logout",
                     style: TextStyle(color: Colors.white),
                   )),

@@ -8,7 +8,7 @@ class EditableField extends StatefulWidget {
   final TextEditingController? controller;
 
   const EditableField(
-      {Key? key,
+      {super.key, 
       required this.label,
       required this.data,
       required this.controller});
@@ -38,7 +38,7 @@ class _EditableFieldState extends State<EditableField> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: 210,
                 child: TextField(
                   controller: widget.controller,

@@ -8,7 +8,6 @@ class TechnicianTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("technician ${technician.toJson()}");
     return Card(
       color: Theme.of(context).colorScheme.secondary,
       child: ListTile(

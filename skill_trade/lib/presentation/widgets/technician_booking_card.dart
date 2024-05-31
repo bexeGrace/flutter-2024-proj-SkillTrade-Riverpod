@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skill_trade/models/booking.dart';
@@ -18,12 +17,12 @@ class TechnicianBookingCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final bookingState = ref.watch(bookingProvider);
+    ref.watch(bookingProvider);
     final bookingNotifier = ref.read(bookingProvider.notifier);
     return Card(
       elevation: 4.0,
       color: Theme.of(context).colorScheme.secondary,
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -62,7 +61,7 @@ class TechnicianBookingCard extends ConsumerWidget {
               data: booking.status,
             ),
             const SizedBox(height: 5),
-            Divider(
+            const Divider(
               thickness: 2,
             ),
             const SizedBox(height: 5),
@@ -91,14 +90,14 @@ class TechnicianBookingCard extends ConsumerWidget {
                           .updateBooking({"status": "accepted"}, booking.id);
                       // BlocProvider.of<BookingsBloc>(context).add(UpdateBooking(updates: {"status": "accepted"}, bookingId: booking.id, whoUpdated: "technician"));
                     },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                    ),
                     child: const Text(
                       'Accept',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.green),
                     ),
                   ),
                   ElevatedButton(
@@ -107,14 +106,14 @@ class TechnicianBookingCard extends ConsumerWidget {
                           .updateBooking({"status": "declined"}, booking.id);
                       // BlocProvider.of<BookingsBloc>(context).add(UpdateBooking(updates: {"status": "declined"}, bookingId: booking.id, whoUpdated: "technician"));
                     },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                    ),
                     child: const Text(
                       'Decline',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
                     ),
                   ),
                   ElevatedButton(
@@ -123,14 +122,14 @@ class TechnicianBookingCard extends ConsumerWidget {
                           .updateBooking({"status": "serviced"}, booking.id);
                       // BlocProvider.of<BookingsBloc>(context).add(UpdateBooking(updates: {"status": "serviced"}, bookingId: booking.id, whoUpdated: "technician"));
                     },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
                     child: const Text(
                       'Serviced',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
                     ),
                   ),
                 ],
