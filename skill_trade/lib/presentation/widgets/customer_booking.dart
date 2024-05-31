@@ -55,7 +55,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
     final bookingNotifier = ref.read(bookingProvider.notifier);
 
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
@@ -133,7 +133,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
             controller: widget._controllers["serviceLocation"],
           ),
           InfoLabel(label: "Status", data: widget.booking.status),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Row(
             children: [
               ElevatedButton(
@@ -173,7 +173,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
                     }
                   });
                 },
-                child: const Text(
+                child: Text(
                   "Delete Booking",
                   style: TextStyle(color: Colors.white),
                 ),

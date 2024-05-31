@@ -13,10 +13,9 @@ import 'package:skill_trade/technician.dart';
 void main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-
   group('Technician Signup', () {
     testWidgets('Technician Signup', (WidgetTester tester) async {
-      await tester.pumpWidget(MyApp());
+      await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();
 
       // Wait for the app to settle
@@ -73,7 +72,7 @@ void main() async {
       await tester.tap(skill2);
       await tester.pumpAndSettle();
 
-      await tester.tapAt(Offset(0, 0));
+      await tester.tapAt(const Offset(0, 0));
       await tester.pumpAndSettle();
 
       final signupButtonFinderForm = find.text('Apply');
@@ -89,7 +88,7 @@ void main() async {
   });
   group('Technician Login Tests', () {
     testWidgets('Technician Login', (WidgetTester tester) async {
-      await tester.pumpWidget(MyApp());
+      await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();
 
       await tester.pumpAndSettle();
@@ -105,7 +104,8 @@ void main() async {
 
       expect(find.byType(LoginPage), findsOneWidget);
 
-      await tester.enterText( find.bySemanticsLabel('email'), 'jane.smith@example.com');
+      await tester.enterText(
+          find.bySemanticsLabel('email'), 'jane.smith@example.com');
       await tester.enterText(find.bySemanticsLabel('password'), 'password123');
       await tester.pumpAndSettle();
 
@@ -117,14 +117,13 @@ void main() async {
       await tester.ensureVisible(loginButtonFinderForm);
       await tester.pumpAndSettle();
 
- 
       await tester.tap(loginButtonFinderForm);
 
       await tester.pumpAndSettle();
 
       expect(await find.byType(TechnicianPage), findsOneWidget);
 
-      final openDrawerIcon = find.byIcon(Icons.menu); 
+      final openDrawerIcon = find.byIcon(Icons.menu);
       await tester.ensureVisible(openDrawerIcon);
 
       await tester.tap(openDrawerIcon);
