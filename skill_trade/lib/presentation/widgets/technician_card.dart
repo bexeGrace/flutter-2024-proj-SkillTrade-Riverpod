@@ -4,7 +4,7 @@ import 'package:skill_trade/presentation/screens/bookings.dart';
 
 class TechnicianCard extends StatelessWidget {
   final Technician technician;
-  const TechnicianCard ({super.key, required this.technician});
+  const TechnicianCard({super.key, required this.technician});
 
   @override
   Widget build(BuildContext context) {
@@ -15,24 +15,42 @@ class TechnicianCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/technician.png", width: 60, height: 60,),
+            Image.asset(
+              "assets/technician.png",
+              width: 60,
+              height: 60,
+            ),
             ListTile(
-              title: Text(technician.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
-              subtitle: Text("Speciality: ${technician.speciality}", style: TextStyle(fontSize: 17), textAlign: TextAlign.center,),
+              title: Text(
+                technician.name,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                "Speciality: ${technician.speciality}",
+                style: const TextStyle(fontSize: 17),
+                textAlign: TextAlign.center,
+              ),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, 
-                
-                MaterialPageRoute(builder: ((context) => MyBookings(technician: this.technician,))));
-                
-              }, 
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => MyBookings(
+                              technician: this.technician,
+                            ))));
+              },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                backgroundColor: MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary),
               ),
-              child: const Text("Get Technician", style: TextStyle(color: Colors.white, fontSize: 15),),
-              
+              child: const Text(
+                "Get Technician",
+                style: TextStyle(color: Colors.white, fontSize: 15),
               ),
+            ),
           ],
         ),
       ),
