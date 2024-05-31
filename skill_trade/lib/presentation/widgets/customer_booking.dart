@@ -16,8 +16,10 @@ class CustomerBooking extends ConsumerStatefulWidget {
     required this.technician,
   })  : _controllers = {
           "serviceNeeded": TextEditingController(text: booking.serviceNeeded),
-          "problemDescription": TextEditingController(text: booking.problemDescription),
-          "serviceLocation": TextEditingController(text: booking.serviceLocation),
+          "problemDescription":
+              TextEditingController(text: booking.problemDescription),
+          "serviceLocation":
+              TextEditingController(text: booking.serviceLocation),
         },
         _selectedDate = booking.serviceDate,
         super(key: key);
@@ -62,30 +64,33 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
+          const Text(
             "Booked With",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           bookingState.isLoading
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : Text(
                   widget.technician.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600),
                 ),
           if (statusMessage != null)
             Text(
               statusMessage!,
               style: TextStyle(color: statusColor),
             ),
-          SizedBox(height: 7),
+          const SizedBox(height: 7),
           InfoLabel(label: "Email", data: widget.technician.email),
-          SizedBox(height: 7),
-          InfoLabel(label: "Speciality", data: widget.technician.speciality),
-          SizedBox(height: 7),
+          const SizedBox(height: 7),
+          InfoLabel(label: "Speciality", data: widget.technician.specialty),
+          const SizedBox(height: 7),
           InfoLabel(label: "Phone", data: widget.technician.phone),
-          SizedBox(height: 20),
-          InfoLabel(label: "Booked Date", data: widget.booking.bookedDate.toString().substring(0, 10)),
+          const SizedBox(height: 20),
+          InfoLabel(
+              label: "Booked Date",
+              data: widget.booking.bookedDate.toString().substring(0, 10)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -144,7 +149,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
                     }
                   });
                 },
-                child: Text(
+                child: const Text(
                   "Edit",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -154,7 +159,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
                   ),
                 ),
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
                   await deleteBooking(bookingNotifier, widget.booking.id);
@@ -168,7 +173,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
                     }
                   });
                 },
-                child: Text(
+                child: const Text(
                   "Delete Booking",
                   style: TextStyle(color: Colors.white),
                 ),

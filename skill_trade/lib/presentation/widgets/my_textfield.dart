@@ -12,24 +12,23 @@ class MyTextField extends StatefulWidget {
   final bool requiredField;
 
   const MyTextField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.prefixIcon,
     this.suffixIcon,
     required this.controller,
     required this.toggleText,
-    this.multiline=false,
+    this.multiline = false,
     this.obscureText = false,
     this.onChanged,
     this.requiredField = true,
-  }) : super(key: key);
+  });
 
   @override
   State<MyTextField> createState() => _MyTextFieldState();
 }
 
 class _MyTextFieldState extends State<MyTextField> {
- 
   bool _obscure = false;
   IconButton? _suffixIcon;
   @override
@@ -40,41 +39,41 @@ class _MyTextFieldState extends State<MyTextField> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.suffixIcon != null){
+    if (widget.suffixIcon != null) {
       _suffixIcon = IconButton(
-          icon: Icon(widget.suffixIcon,
+        icon: Icon(
+          widget.suffixIcon,
           color: Colors.grey[600],
-          size: 25,),
-          onPressed: (){ 
-            if (widget.toggleText){
-              setState(() { 
-                _obscure = !_obscure;
-
-              });
-            }
-          },
-
-        );
+          size: 25,
+        ),
+        onPressed: () {
+          if (widget.toggleText) {
+            setState(() {
+              _obscure = !_obscure;
+            });
+          }
+        },
+      );
     }
     return TextFormField(
       controller: widget.controller,
       obscureText: _obscure,
-      // onChanged: widget.onChanged,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.black87,
         fontSize: 16.0,
       ),
-    
-      maxLines: widget.multiline ? null : 1, 
+
+      maxLines: widget.multiline ? null : 1,
       validator: (String? value) {
         if (value == null || value.isEmpty) {
-          if (widget.requiredField)
-          { return 'Please enter your ${widget.labelText}';}
+          if (widget.requiredField) {
+            return 'Please enter your ${widget.labelText}';
+          }
           return null;
         }
         return null;
       },
-        
+
       decoration: InputDecoration(
         labelText: widget.labelText,
         prefixIcon: Icon(
@@ -82,20 +81,16 @@ class _MyTextFieldState extends State<MyTextField> {
           color: Colors.grey[600],
           size: 25,
         ),
-        
-            
         suffixIcon: _suffixIcon,
-        
         filled: true,
         fillColor: Colors.white,
-
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.transparent),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -103,16 +98,14 @@ class _MyTextFieldState extends State<MyTextField> {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.red),
+          borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.red),
+          borderSide: const BorderSide(color: Colors.red),
         ),
         labelStyle: TextStyle(color: Colors.grey[600]),
       ),
     );
   }
 }
-
-

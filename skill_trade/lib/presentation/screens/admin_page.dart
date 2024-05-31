@@ -40,11 +40,9 @@ class AdminPage extends ConsumerWidget {
                 ): const Center(child: Text("No pending applications"),);
 
             },
-            loading: () => Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: ((error, stackTrace) => Text("Error loading technician applications.${error}"))
           )
-          
-          
         ),
       ],
     );

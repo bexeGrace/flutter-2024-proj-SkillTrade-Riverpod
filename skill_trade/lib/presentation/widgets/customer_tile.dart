@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skill_trade/models/customer.dart';
-import 'package:skill_trade/presentation/screens/admin_customer.dart';
 
 class CustomerTile extends StatelessWidget {
   final Customer customer;
@@ -16,7 +15,7 @@ class CustomerTile extends StatelessWidget {
             padding: const EdgeInsets.only(right: 10.0),
             child: Image.asset("assets/customer.png"),
           ),
-          title: Text("${customer.fullName}", style: TextStyle(fontWeight: FontWeight.w500),),
+          title: Text(customer.fullName, style: const TextStyle(fontWeight: FontWeight.w500),),
           subtitle: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -22,7 +22,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void initState() {
     super.initState();
     _selectedRole = 'Customer';
-    // ref.read(authProvider.notifier)._loadToken();
   }
 
   @override
@@ -31,13 +30,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: authState.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
               Card(
-                // color: Colors.white,
                 color: Theme.of(context).colorScheme.background,
                 margin: const EdgeInsets.all(10),
                 elevation: 20,
@@ -60,7 +58,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         if (authState.errorMessage != null)
                         Text(
                           authState.errorMessage!,
-                          style: TextStyle(color: Colors.red),
+                          style: const TextStyle(color: Colors.red),
                         ),
                         MyTextField(
                             labelText: "email",
@@ -83,7 +81,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           height: 15,
                         ),
                         Row(
-                          // mainAxisAlignment: MainAxisAlignment.,
                           children: [
                             Radio<String>(
                               value: 'customer',
@@ -95,7 +92,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               },
                             ),
                             const Text('Customer'),
-                            // SizedBox(width: 15,),
                             Radio<String>(
                               value: 'technician',
                               groupValue: _selectedRole,
@@ -106,7 +102,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               },
                             ),
                             const Text('Technician'),
-                            // SizedBox(width: 15,),
                             Radio<String>(
                               value: 'admin',
                               groupValue: _selectedRole,
@@ -124,7 +119,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         MyButton(
                             text: "login",
-                            onPressed: ()async {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 await ref.read(authProvider.notifier).signin(_selectedRole, _emailController.text, _passwordController.text);
                                 final auth = ref.watch(authProvider);
