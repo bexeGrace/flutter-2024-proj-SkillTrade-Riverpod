@@ -16,50 +16,11 @@ class AdminCustomer extends ConsumerWidget {
       body: ListView(
         children: [
           if (customer == null)
-            Center(
+            const Center(
               child: Text("There is no customer"),
             )
           else
             customerProfile(customer: customer)
-
-<<<<<<< HEAD
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     ElevatedButton(
-          //       onPressed: () {},
-          //       style: ButtonStyle(
-          //         backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-          //       ),
-          //       child: const Text(
-          //         "Suspend",
-          //         style: TextStyle(
-          //             color: Colors.white, fontWeight: FontWeight.w600),
-          //       ),
-          //     ),
-          //     const SizedBox(
-          //       width: 20,
-          //     ),
-          //     ElevatedButton(
-          //       onPressed: () {},
-          //       style: ButtonStyle(
-          //         backgroundColor:
-          //             MaterialStateProperty.all<Color>(Colors.green),
-          //       ),
-          //       child: const Text(
-          //         "Unsuspend",
-          //         style: TextStyle(
-          //             color: Colors.white, fontWeight: FontWeight.w600),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // const SizedBox(
-          //   height: 30,
-          // ),
-          // const Padding(
-=======
->>>>>>> 5068cd5fad880969f9959d294fa588da732ac77a
         ],
       ),
     );
