@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
 }
 
 class TechnicianProfile extends ConsumerStatefulWidget {
-  const TechnicianProfile({Key? key}) : super(key: key);
+  const TechnicianProfile({super.key});
 
   @override
   ConsumerState<TechnicianProfile> createState() => _TechnicianProfileState();
@@ -28,7 +28,7 @@ class TechnicianProfile extends ConsumerStatefulWidget {
 
 class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
   final Map<String, TextEditingController> _controllers = {};
-  String? _technician_status ;
+  String? technicianStatus ;
 
   @override
   void initState() {
@@ -46,11 +46,11 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
         child: ListView(
           children: [
             const SizedBox(height: 16),
-            if (technicianState.isLoading) CircularProgressIndicator(),
+            if (technicianState.isLoading) const CircularProgressIndicator(),
               if (technicianState.errorMessage != null)
                 Text(
                   technicianState.errorMessage!,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               
               // Text('Update Successful!'),
@@ -64,7 +64,7 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
                     _controllers['available_location'] = TextEditingController(text: profile.availableLocation);
                     _controllers['additional_bio'] = TextEditingController(text: profile.additionalBio);
                   }
-                _technician_status = profile.status;
+                technicianStatus = profile.status;
 
 
 
@@ -109,18 +109,19 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   updateProfile();
-                                  if (technicianState.success) 
+                                  if (technicianState.success) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
+                                          const SnackBar(
                                             content: Text( 'Successfully updated!'),
                                           ),
                                         );
+                                  }
     
                                 },
-                                child: const Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                                 style: TextButton.styleFrom(
                                   backgroundColor: Theme.of(context).colorScheme.primary,
                                 ),
+                                child: const Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -132,7 +133,7 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
       
                 },
           
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error loading technician profile: $error')),
         ),
 
@@ -151,7 +152,7 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
       'educationLevel': _controllers['education_level']?.text,
       'availableLocation': _controllers['available_location']?.text,
       'additionalBio': _controllers['additional_bio']?.text,
-      'status': _technician_status,
+      'status': technicianStatus,
     };
 
     ref.read(technicianProfileUpdateProvider.notifier).updateTechnician(updatedData);
