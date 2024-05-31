@@ -39,9 +39,6 @@ class _CustomerPageState extends State<CustomerPage> {
     return MaterialApp(
       title: "Customer Page",
       initialRoute: "/",
-      routes: {
-        // "/booktech": (context) => MyBookings(),
-      },
       debugShowCheckedModeBanner: false,
       theme: lightMode,
       home: Scaffold(

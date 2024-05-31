@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/review.dart';
 import 'package:skill_trade/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/editable_textfield.dart';
 import 'package:skill_trade/presentation/widgets/technician_profile.dart';
@@ -19,7 +18,7 @@ class MyBookings extends ConsumerStatefulWidget {
 }
 
 class _MyBookingsState extends ConsumerState<MyBookings> {
-  late DateTime? _selectedDate = null;
+  late DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -37,13 +36,10 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
 
   double _rating = 0;
   String _review = '';
-  List<Review> _reviews = []; // List to store previous reviews
-  TextEditingController _reviewController = TextEditingController();
+  final TextEditingController _reviewController = TextEditingController();
   TextEditingController serviceNeededController = TextEditingController();
   TextEditingController serviceLocationController = TextEditingController();
-  TextEditingController problemDescriptionController = TextEditingController();
-  var _customer;
-  
+  TextEditingController problemDescriptionController = TextEditingController();  
 
   void _submitReview() async {
 
@@ -59,19 +55,16 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
     
   }
 
+  @override
   void initState(){
-    
-    // ref.read(customerNotifierProvider.notifier).fetchProfile();
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(customerNotifierProvider.notifier).fetchProfile();
       ref.read(reviewProvider.notifier).fetchReviews(widget.technician.id);
     });
-    
-    // _customer = customerState.customer;
-
   }
+
   void submitBooking() {
-    // BlocProvider.of<BookingsBloc>(context).add();
     final booking = {
       "problemDescription": problemDescriptionController.text,
       "technicianId": widget.technician.id, 
@@ -93,7 +86,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
   Widget build(BuildContext context) {
     final bookingState = ref.watch(bookingProvider);
     final reviewState = ref.watch(reviewProvider);
-    final customerState = ref.watch(customerNotifierProvider);
+    ref.watch(customerNotifierProvider);
 
     return Scaffold(
           appBar: AppBar(
@@ -125,7 +118,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                 ),
               ),
               if(bookingState.isLoading)
-                Center(child: CircularProgressIndicator(),)
+                const Center(child: CircularProgressIndicator(),)
               else Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                 child: Column(
@@ -146,8 +139,8 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                             Text(
                               _selectedDate == null
                                   ? 'No date selected'
-                                  : '${_selectedDate.toString().substring(0, 10)}',
-                              style: TextStyle(
+                                  : _selectedDate.toString().substring(0, 10),
+                              style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),
                             TextButton(
@@ -164,14 +157,14 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Service \nNeeded:",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 7,
                         ),
                         SizedBox(
@@ -179,7 +172,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                           height: 40,
                           child: TextField(
                             controller: serviceNeededController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -192,14 +185,14 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Service \nLocation:",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 7,
                         ),
                         SizedBox(
@@ -207,7 +200,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                           height: 40,
                           child: TextField(
                             controller: serviceLocationController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -220,14 +213,14 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Problem \nDescription:",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 7,
                         ),
                         SizedBox(
@@ -235,7 +228,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                           height: 60,
                           child: TextField(
                             controller: problemDescriptionController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -244,7 +237,7 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                     ),
                     
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: 20),
+                      margin: const EdgeInsets.symmetric(vertical: 20),
                       width: 250,
                       child:  TextButton(
                           onPressed:(){
@@ -253,22 +246,22 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                             ref.watch(bookingProvider);
                             if (bookingState.isSuccess) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Booking created successfully!')),
+                                const SnackBar(content: Text('Booking created successfully!')),
                               );
                               // Optionally, navigate to another page
                             } else if (bookingState.errorMessage != null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('Error: ${bookingState.errorMessage}')),
                               );
-                            };
+                            }
                           },
-                          child: Text(
-                            "Book",
-                            style: TextStyle(color: Colors.white),
-                          ),
                           style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
+                          ),
+                          child: const Text(
+                            "Book",
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -276,8 +269,8 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Divider(
                   thickness: 1,
                   color: Colors.black,
                 ),
@@ -286,29 +279,29 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
               // Review //
         
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Previous reviews
-                    Text(
+                    const Text(
                       'Reviews',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     if(reviewState.isLoading)
-                      Center(child: CircularProgressIndicator())
+                      const Center(child: CircularProgressIndicator())
                     else if(reviewState.isSuccess) ...[
-                      reviewState.reviews.length == 0 ?
-                          Text(
+                      reviewState.reviews.isEmpty ?
+                          const Text(
                             "No reviews yet!",
                           )
-                      : Container(
+                      : SizedBox(
                             height: reviewState.reviews.length * 110,
                             child: ListView.builder(
                               itemCount: reviewState.reviews.length,
                               itemBuilder: (context, index) {
-                                final cur_review = reviewState.reviews[index];
+                                final curReview = reviewState.reviews[index];
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,12 +314,12 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                                           width: 40,
                                           height: 40,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
                                         Text(
-                                          cur_review.customer,
-                                          style: TextStyle(
+                                          curReview.customer,
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w500),
                                         ),
@@ -334,34 +327,34 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                                     ),
                                     ListTile(
                                       title: RatingStars(
-                                          rating: cur_review.rating),
+                                          rating: curReview.rating),
                                       subtitle: Consumer( 
                                         builder: (context, watch, child){
                                           final customerState = ref.watch(customerNotifierProvider);
 
                                             if (!customerState.isLoading) {
 
-                                              if (customerState.customer!.id == cur_review.customerId) {
+                                              if (customerState.customer!.id == curReview.customerId) {
                                                 TextEditingController curController = TextEditingController();
-                                                curController.text = cur_review.review;
+                                                curController.text = curReview.review;
 
                                                 return Row(
                                                   mainAxisSize: MainAxisSize.min,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    EditableField(data: cur_review.review, controller: curController, label: 'review,${cur_review.id}',),
+                                                    EditableField(data: curReview.review, controller: curController, label: 'review,${curReview.id}',),
                                                     IconButton(
                                                       onPressed: () {
-                                                        ref.read(reviewProvider.notifier).deleteReview(cur_review.id, widget.technician.id);
+                                                        ref.read(reviewProvider.notifier).deleteReview(curReview.id, widget.technician.id);
                                                       }, 
-                                                      icon: Icon(Icons.delete, color: Colors.red, ))
+                                                      icon: const Icon(Icons.delete, color: Colors.red, ))
                                                   ],
                                                 );
                                               } else {
-                                                return Text(cur_review.review);
+                                                return Text(curReview.review);
                                               }
                                             } else {
-                                              return Text(cur_review.review);
+                                              return Text(curReview.review);
                                             }
                                         },
                                       )
@@ -374,12 +367,12 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
             
 
                     ],
-                    SizedBox(height: 20),
-                    Text(
+                    const SizedBox(height: 20),
+                    const Text(
                       'Leave a Review',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     // Star rating widget
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -411,28 +404,28 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Text input for review
                     TextField(
                       controller: _reviewController,
                       onChanged: (value) => _review = value,
                       maxLines: 5,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Write your review here...',
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Submit button
                     ElevatedButton(
                       onPressed: _submitReview,
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white),
-                      ),
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
+                      ),
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],

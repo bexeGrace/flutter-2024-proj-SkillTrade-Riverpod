@@ -8,7 +8,6 @@ class TechnicianTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("technician ${technician.toJson()}");
     return Card(
       color: Theme.of(context).colorScheme.secondary,
       child: ListTile(
@@ -26,7 +25,7 @@ class TechnicianTile extends StatelessWidget {
           children: [
             Text("Email: ${technician.email}"),
             Text("tel: ${technician.phone}"),
-            Text("Skills: ${technician.speciality}"),
+            Text("Skills: ${technician.specialty}"),
           ],
         ),
         trailing: TextButton(

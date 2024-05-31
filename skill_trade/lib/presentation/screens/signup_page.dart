@@ -13,21 +13,21 @@ class SignupPage extends ConsumerStatefulWidget {
 }
 
 class _SignupPageState extends ConsumerState<SignupPage> {
-  String _user_role = "customer";
+  String userRole = "customer";
   Color _borderColor1 = Colors.blue;
   Color _borderColor2 = Colors.black;
-  TextEditingController _fullNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _experienceController = TextEditingController();
-  TextEditingController _educationController = TextEditingController();
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _bioController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _experienceController = TextEditingController();
+  final TextEditingController _educationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
 
-  List<String> _selectedTags = [];
+  final List<String> _selectedTags = [];
 
-  List<String> _availableTags = [
+  final List<String> _availableTags = [
     'Electricity',
     'HVAC',
     'Satelite dish',
@@ -39,9 +39,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   bool _noSkillChosen = false;
 
+  @override
   void initState(){ 
     super.initState();
-    // ref.read(authProvider.notifier);
   }
 
   @override
@@ -54,7 +54,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           child: authState.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
             children: [
               Padding(
@@ -104,7 +104,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _user_role = "customer";
+                                      userRole = "customer";
                                       _borderColor1 = Colors.blue;
                                       _borderColor2 = Colors.black;
                                     });
@@ -131,7 +131,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _user_role = "technician";
+                                      userRole = "technician";
                                       _borderColor2 = Colors.blue;
                                       _borderColor1 = Colors.black;
                                     });
@@ -150,7 +150,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                         if (authState.errorMessage != null)
                         Text(
                           authState.errorMessage!,
-                          style: TextStyle(color: Colors.red),
+                          style: const TextStyle(color: Colors.red),
                         ),
                         Form(
                             key: _formKey,
@@ -194,7 +194,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 const SizedBox(
                                   height: 15,
                                 ),
-                                if (_user_role == "technician") ...[
+                                if (userRole == "technician") ...[
                                   MyTextField(
                                       labelText: "Experience",
                                       prefixIcon: Icons.timelapse_sharp,
@@ -322,7 +322,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                       text: "Apply",
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          if (_selectedTags.length > 0) {
+                                          if (_selectedTags.isNotEmpty) {
                                             
                                               final technician = {
                                               "fullName": _fullNameController.value.text,
@@ -343,12 +343,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
 
                                            final auth = ref.watch(authProvider);
-                                            print("this is authState.success ${auth.success} ");
                                             if (auth.success) {
                                              ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
                                                   backgroundColor: lightMode.primaryColorLight,
-                                                  content: Text( 'Sign up successful'),
+                                                  content: const Text('Sign up successful'),
                                                 ),
                                               );
                                             } else {
@@ -382,7 +381,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                       },
                                       width: double.infinity),
                                 ],
-                                if (_user_role == "customer") ...[
+                                if (userRole == "customer") ...[
                                   const SizedBox(
                                     height: 15,
                                   ),
@@ -399,10 +398,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                           };
 
 
-                                              if (!authState.success)
-                                                  await authNotifier.signup(customer);
+                                              if (!authState.success) {
+                                                await authNotifier.signup(customer);
+                                              }
                                              final auth = ref.watch(authProvider);
-                                            print("this is authState.success ${auth.success} ");
                                             if (auth.success) {
                                              ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(

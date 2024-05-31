@@ -9,7 +9,7 @@ class TechniciansList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     
-    final asycnTechicians = ref.watch(allTechnicianProvider);
+    final asyncTechnicians = ref.watch(allTechnicianProvider);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -18,10 +18,8 @@ class TechniciansList extends ConsumerWidget {
             "Technicians",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          asycnTechicians.when(
+          asyncTechnicians.when(
             data: (techs){
-
-              print("pending techs on ui $techs");
               return Expanded(
                 child: ListView.builder(
                   
@@ -33,8 +31,7 @@ class TechniciansList extends ConsumerWidget {
               
             },
             error: (error, stack) => Center(child: Text('Error loading technicians: $error')), 
-            loading: () => Center(child: CircularProgressIndicator())),
-          // for (int i = 0; i < 5; i++) const ,
+            loading: () => const Center(child: CircularProgressIndicator())),
           const SizedBox(
             height: 30,
           ),

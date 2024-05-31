@@ -7,21 +7,18 @@ class MyButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MyButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: 
+    return SizedBox(
       width: width,
       child: ElevatedButton(
         onPressed: onPressed,
-        
-
         style: ElevatedButton.styleFrom(
           elevation: 3.0,
           shape: RoundedRectangleBorder(

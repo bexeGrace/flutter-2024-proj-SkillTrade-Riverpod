@@ -12,7 +12,7 @@ class MyTextField extends StatefulWidget {
   final bool requiredField;
 
   const MyTextField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.prefixIcon,
     this.suffixIcon,
@@ -22,7 +22,7 @@ class MyTextField extends StatefulWidget {
     this.obscureText = false,
     this.onChanged,
     this.requiredField = true,
-  }) : super(key: key);
+  });
 
   @override
   State<MyTextField> createState() => _MyTextFieldState();
@@ -58,7 +58,6 @@ class _MyTextFieldState extends State<MyTextField> {
     return TextFormField(
       controller: widget.controller,
       obscureText: _obscure,
-      // onChanged: widget.onChanged,
       style: const TextStyle(
         color: Colors.black87,
         fontSize: 16.0,

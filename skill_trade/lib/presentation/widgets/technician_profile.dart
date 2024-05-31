@@ -12,7 +12,6 @@ class TechnicianSmallProfile extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final asyncValueTechnician =
         ref.watch(technicianByIdProvider(technician.id));
-    // print("tech small profile says $technician");
     return asyncValueTechnician.when(
         data: (tech) {
           return Column(
@@ -47,45 +46,45 @@ class TechnicianSmallProfile extends ConsumerWidget {
                   children: [
                     InfoLabel(
                         label: "Email",
-                        data: tech.email), //"mysteryabe456@gmail.com"),
+                        data: tech.email), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
-                        label: "Phone", data: tech.phone), //"0936120470"),
+                        label: "Phone", data: tech.phone), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
                         label: "Skills",
                         data:
-                            tech.speciality), //"Electrican, Dish technician"),
+                            tech.specialty), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
                         label: "Experience",
                         data: tech
-                            .experience), //"15 years in ELPA, 3 amet did mastat"),
+                            .experience), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
                         label: "Education Level",
                         data: tech
-                            .educationLevel), //"Bsc. in Electrical Engineering"),
+                            .educationLevel), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
                         label: "Available Location",
-                        data: tech.availableLocation), //"Harar"),
+                        data: tech.availableLocation), 
                     const SizedBox(
                       height: 3,
                     ),
                     InfoLabel(
                         label: "Additional Bio",
-                        data: tech.additionalBio), //"Tiris yeneqelkubet"),
+                        data: tech.additionalBio),
                   ],
                 ),
               )

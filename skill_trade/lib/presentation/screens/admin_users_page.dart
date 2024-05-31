@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skill_trade/presentation/widgets/customer_tile.dart';
 import 'package:skill_trade/riverpod/customer_provider.dart';
@@ -35,12 +34,9 @@ class CustomersList extends ConsumerWidget {
                 );
 
             },
-            loading: () => Center(child: CircularProgressIndicator(),),
+            loading: () => const Center(child: CircularProgressIndicator(),),
             error: (error, stackTrace) => Text("Customers could not be loaded. $error")
           )
-          
-          
-         
         ),
         ],
       ),
