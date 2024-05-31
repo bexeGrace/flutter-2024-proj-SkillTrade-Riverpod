@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/technician_tile.dart';
 import 'package:skill_trade/riverpod/technician_provider.dart';
 

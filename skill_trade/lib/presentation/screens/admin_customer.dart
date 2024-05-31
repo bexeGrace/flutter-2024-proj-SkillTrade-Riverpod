@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/customer.dart';
 import 'package:skill_trade/presentation/widgets/customer_profile.dart';
 
 class AdminCustomer extends ConsumerWidget {
@@ -21,43 +20,6 @@ class AdminCustomer extends ConsumerWidget {
             Center(child: Text("There is no customer"),)
           else
           customerProfile(customer: customer)
-
-          
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     ElevatedButton(
-          //       onPressed: () {},
-          //       style: ButtonStyle(
-          //         backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-          //       ),
-          //       child: const Text(
-          //         "Suspend",
-          //         style: TextStyle(
-          //             color: Colors.white, fontWeight: FontWeight.w600),
-          //       ),
-          //     ),
-          //     const SizedBox(
-          //       width: 20,
-          //     ),
-          //     ElevatedButton(
-          //       onPressed: () {},
-          //       style: ButtonStyle(
-          //         backgroundColor:
-          //             MaterialStateProperty.all<Color>(Colors.green),
-          //       ),
-          //       child: const Text(
-          //         "Unsuspend",
-          //         style: TextStyle(
-          //             color: Colors.white, fontWeight: FontWeight.w600),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // const SizedBox(
-          //   height: 30,
-          // ),
-          // const Padding(
 
         ],
       ),

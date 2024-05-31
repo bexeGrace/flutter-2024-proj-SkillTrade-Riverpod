@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/customer.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skill_trade/models/review.dart';
 import 'package:skill_trade/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/editable_textfield.dart';
@@ -11,9 +8,6 @@ import 'package:skill_trade/presentation/widgets/rating_stars.dart';
 import 'package:skill_trade/riverpod/booking_provider.dart';
 import 'package:skill_trade/riverpod/customer_provider.dart';
 import 'package:skill_trade/riverpod/review_provider.dart';
-import 'package:skill_trade/riverpod/secure_storage_provider.dart';
-// import 'package:skill_trade/state_managment/bookings/bookings_bloc.dart';
-// import 'package:skill_trade/state_managment/bookings/bookings_event.dart';
 
 class MyBookings extends ConsumerStatefulWidget {
   final Technician technician;
@@ -156,7 +150,6 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),
-                            // SizedBox(height: 20),
                             TextButton(
                               onPressed: () => _selectDate(context),
                               child: const Text('Select Date'),
@@ -381,52 +374,6 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
             
 
                     ],
-                    
-                     
-                    
-                    // _reviews.length > 0
-                        // ? Container(
-                        //     height: _reviews.length * 110,
-                        //     child: ListView.builder(
-                        //       itemCount: _reviews.length,
-                        //       itemBuilder: (context, index) {
-                        //         return Column(
-                        //           mainAxisSize: MainAxisSize.min,
-                        //           crossAxisAlignment: CrossAxisAlignment.start,
-                        //           children: [
-                        //             Row(
-                        //               crossAxisAlignment: CrossAxisAlignment.center,
-                        //               children: [
-                        //                 Image.asset(
-                        //                   "assets/profile.jpg",
-                        //                   width: 40,
-                        //                   height: 40,
-                        //                 ),
-                        //                 SizedBox(
-                        //                   width: 5,
-                        //                 ),
-                        //                 Text(
-                        //                   _reviews[index].customer.fullName,
-                        //                   style: TextStyle(
-                        //                       fontSize: 15,
-                        //                       fontWeight: FontWeight.w500),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //             ListTile(
-                        //               title: RatingStars(
-                        //                   rating: _reviews[index].rating),
-                        //               subtitle: Text(_reviews[index].review),
-                        //             ),
-                        //           ],
-                        //         );
-                        //       },
-                        //     ),
-                        //   )
-                        // : Text(
-                        //     "No reviews yet!",
-                        //   ),
-        
                     SizedBox(height: 20),
                     Text(
                       'Leave a Review',

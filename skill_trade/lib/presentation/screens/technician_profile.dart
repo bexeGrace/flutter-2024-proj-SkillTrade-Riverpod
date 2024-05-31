@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skill_trade/presentation/widgets/editable_textfield.dart';
 import 'package:skill_trade/presentation/widgets/info_label.dart';
 import 'package:skill_trade/riverpod/technician_provider.dart';
-// import 'package:skill_trade/state_managment/individual_technician/individual_technician_bloc.dart';
-// import 'package:skill_trade/state_managment/individual_technician/individual_technician_event.dart';
-// import 'package:skill_trade/state_managment/individual_technician/individual_technician_state.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -158,13 +153,9 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
       'additionalBio': _controllers['additional_bio']?.text,
       'status': _technician_status,
     };
-    
-    
-    ref.read(technicianProfileUpdateProvider.notifier).updateTechnician(updatedData);
-    
 
-    // BlocProvider.of<IndividualTechnicianBloc>(context).add(UpdateTechnicianProfile(technicianId: technicianId, updates: updatedData));
-  }
+    ref.read(technicianProfileUpdateProvider.notifier).updateTechnician(updatedData);
+ }
 }
 
 
