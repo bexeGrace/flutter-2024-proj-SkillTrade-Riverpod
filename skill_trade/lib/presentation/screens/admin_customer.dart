@@ -9,14 +9,6 @@ class AdminCustomer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    // Customer? customer;
-
-
-    //  if (ModalRoute.of(context)!.settings.arguments != null) {
-    //   customer = ModalRoute.of(context)!.settings.arguments as Customer;
-    //   // final asyncCustomer
-    //   // BlocProvider.of<CustomerBloc>(context).add(LoadCustomer(customerId: customerId.toString()));
-    // }
     
     return Scaffold(
       appBar: AppBar(
@@ -66,16 +58,7 @@ class AdminCustomer extends ConsumerWidget {
           //   height: 30,
           // ),
           // const Padding(
-          //   padding: EdgeInsets.only(left: 15.0),
-          //   child: Text(
-          //     "Booking History",
-          //     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
-          //   ),
-          // ),
-          // for (int i = 0; i < 2; i++)
-            // const CustomerBooking(
-            //   editAccess: false,
-            // )
+
         ],
       ),
     );
