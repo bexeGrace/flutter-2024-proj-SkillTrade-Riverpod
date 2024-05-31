@@ -7,7 +7,11 @@ class EditableField extends StatefulWidget {
   final String data;
   final TextEditingController? controller;
 
-  EditableField({Key? key, required this.label, required this.data, required this.controller});
+  const EditableField(
+      {Key? key,
+      required this.label,
+      required this.data,
+      required this.controller});
 
   @override
   State<EditableField> createState() => _EditableFieldState();
@@ -23,14 +27,14 @@ class _EditableFieldState extends State<EditableField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        if(widget.label.split(',')[0] != "review")
-          Text(
-            widget.label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
+          if (widget.label.split(',')[0] != "review")
+            Text(
+              widget.label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
             ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -38,28 +42,27 @@ class _EditableFieldState extends State<EditableField> {
                 width: 210,
                 child: TextField(
                   controller: widget.controller,
-                  enabled: isEditing, 
-                  decoration: InputDecoration(
+                  enabled: isEditing,
+                  decoration: const InputDecoration(
                     hintText: 'Editable TextField',
                   ),
                 ),
               ),
-              Consumer(builder: (context, ref, child){
-                 return IconButton(
-                icon: Icon(isEditing ? Icons.check : Icons.edit),
-                onPressed: () {
-                  
-                  if(widget.label.split(',')[0] == "review" && isEditing){ 
-                      ref.read(reviewProvider.notifier).updateReview({"review": widget.controller!.text},int.parse(widget.label.split(",")[1]));
-                  }
-                  setState(() {
-                    isEditing = !isEditing;
-                  });
-                },
-              );
-                
+              Consumer(builder: (context, ref, child) {
+                return IconButton(
+                  icon: Icon(isEditing ? Icons.check : Icons.edit),
+                  onPressed: () {
+                    if (widget.label.split(',')[0] == "review" && isEditing) {
+                      ref.read(reviewProvider.notifier).updateReview(
+                          {"review": widget.controller!.text},
+                          int.parse(widget.label.split(",")[1]));
+                    }
+                    setState(() {
+                      isEditing = !isEditing;
+                    });
+                  },
+                );
               })
-             
             ],
           ),
         ],
