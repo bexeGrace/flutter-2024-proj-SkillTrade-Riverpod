@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skill_trade/models/technician.dart';
-import 'package:skill_trade/presentation/screens/admin_customer.dart';
 import 'package:skill_trade/presentation/screens/admin_page.dart';
-import 'package:skill_trade/presentation/screens/admin_technician.dart';
 import 'package:skill_trade/presentation/screens/admin_users_page.dart';
 import 'package:skill_trade/presentation/screens/reported_technicians.dart';
 import 'package:skill_trade/presentation/screens/technicians_list.dart';
@@ -25,7 +22,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class AdminSiteLogic {
   int currentIndex = 0;
 
@@ -36,20 +32,19 @@ class AdminSiteLogic {
   Widget getCurrentPage() {
     switch (currentIndex) {
       case 0:
-        return  AdminPage();
+        return const AdminPage();
       case 1:
         return const ReportedTechnicians();
       case 2:
         return const CustomersList();
-    
+
       case 3:
         return const TechniciansList();
       default:
-        return  const AdminPage();
+        return const AdminPage();
     }
   }
 }
-
 
 class AdminSite extends StatefulWidget {
   const AdminSite({super.key});
@@ -60,7 +55,6 @@ class AdminSite extends StatefulWidget {
 class _AdminSiteState extends State<AdminSite> {
   final AdminSiteLogic _logic = AdminSiteLogic();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,19 +62,20 @@ class _AdminSiteState extends State<AdminSite> {
         title: const Text('SkillTrade'),
         centerTitle: true,
         leading: Builder(
-            builder: (context) => IconButton(
-              icon: const Padding(
-                padding: EdgeInsets.only(left: 12.0),
-                child: Icon(Icons.menu),
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+          builder: (context) => IconButton(
+            icon: const Padding(
+              padding: EdgeInsets.only(left: 12.0),
+              child: Icon(Icons.menu),
             ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
+        ),
       ),
       drawer: const MyDrawer(),
-      body: _logic.getCurrentPage(),// Display the current page based on the current index
+      body: _logic
+          .getCurrentPage(), // Display the current page based on the current index
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _logic.currentIndex,
         onTap: (index) {
