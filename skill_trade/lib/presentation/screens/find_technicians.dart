@@ -45,7 +45,6 @@ class FindTechnician extends ConsumerWidget {
           Expanded(
             child: technicians.when(
               data: (technicians){ 
-                  print(technicians);
                 return GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,

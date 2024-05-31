@@ -59,7 +59,7 @@ class TechnicianSmallProfile extends ConsumerWidget {
                     InfoLabel(
                         label: "Skills",
                         data:
-                            tech.speciality), //"Electrican, Dish technician"),
+                            tech.specialty), //"Electrican, Dish technician"),
                     const SizedBox(
                       height: 3,
                     ),

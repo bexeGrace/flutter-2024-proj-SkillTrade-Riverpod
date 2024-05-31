@@ -58,7 +58,7 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
               data: (profile) {
                 if (_controllers.isEmpty) {
                     _controllers['phone'] = TextEditingController(text: profile.phone);
-                    _controllers['skills'] = TextEditingController(text: profile.speciality);
+                    _controllers['skills'] = TextEditingController(text: profile.specialty);
                     _controllers['experience'] = TextEditingController(text: profile.experience);
                     _controllers['education_level'] = TextEditingController(text: profile.educationLevel);
                     _controllers['available_location'] = TextEditingController(text: profile.availableLocation);
@@ -95,7 +95,7 @@ class _TechnicianProfileState extends ConsumerState<TechnicianProfile> {
                             const SizedBox(height: 3),
                             EditableField(label: "Phone", data: profile.phone, controller: _controllers['phone'],),
                             const SizedBox(height: 3),
-                            EditableField(label: "Skills", data: profile.speciality, controller: _controllers['skills'],),
+                            EditableField(label: "Skills", data: profile.specialty, controller: _controllers['skills'],),
                             const SizedBox(height: 3),
                             EditableField(label: "Experience", data: profile.experience, controller: _controllers['experience'],),
                             const SizedBox(height: 3),

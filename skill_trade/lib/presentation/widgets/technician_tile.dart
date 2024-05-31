@@ -26,7 +26,7 @@ class TechnicianTile extends StatelessWidget {
           children: [
             Text("Email: ${technician.email}"),
             Text("tel: ${technician.phone}"),
-            Text("Skills: ${technician.speciality}"),
+            Text("Skills: ${technician.specialty}"),
           ],
         ),
         trailing: TextButton(

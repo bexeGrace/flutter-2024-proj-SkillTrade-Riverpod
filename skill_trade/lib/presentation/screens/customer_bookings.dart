@@ -5,7 +5,7 @@ import 'package:skill_trade/riverpod/booking_provider.dart';
 import 'package:skill_trade/riverpod/technician_provider.dart';
 
 class CustomerBookings extends ConsumerStatefulWidget {
-  const CustomerBookings({Key? key}) : super(key: key);
+  const CustomerBookings({super.key});
 
   @override
   _CustomerBookingsState createState() => _CustomerBookingsState();
@@ -16,7 +16,7 @@ class _CustomerBookingsState extends ConsumerState<CustomerBookings> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(bookingProvider.notifier).fetchBookings();
     });
   }
@@ -26,7 +26,7 @@ class _CustomerBookingsState extends ConsumerState<CustomerBookings> {
     final bookingState = ref.watch(bookingProvider);
 
     if (bookingState.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     } else if (bookingState.errorMessage != null) {
       return Center(child: Text(bookingState.errorMessage!));
     } else {
@@ -49,7 +49,7 @@ class _CustomerBookingsState extends ConsumerState<CustomerBookings> {
                     ),
                   );
                 },
-                loading: () => Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(child: Text('Error loading technician: $error')),
               );
             },

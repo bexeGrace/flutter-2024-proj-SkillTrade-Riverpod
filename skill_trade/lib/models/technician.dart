@@ -1,28 +1,24 @@
-// import 'dart:js_util';
-
-import 'package:skill_trade/presentation/widgets/technician_application.dart';
-
 class Technician{ 
-  final String name, speciality;
+  final String name, specialty;
   final int id;
   final String role = "technician";
   String email, phone, password, status, experience, educationLevel, availableLocation, additionalBio;
 
-  Technician({required this.name, required this.id, required this.speciality, this.status ="pending", this.email = "", this.phone = "", this.password = "", this.availableLocation = "", this.additionalBio = "", this.educationLevel = "", this.experience = ""});
+  Technician({required this.name, required this.id, required this.specialty, this.status ="pending", this.email = "", this.phone = "", this.password = "", this.availableLocation = "", this.additionalBio = "", this.educationLevel = "", this.experience = ""});
 
 
   factory Technician.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'fullName': String name,
-        'skills': String speciality,
+        'skills': String specialty,
         'id': int id,
 
       } =>
 
         Technician(
           name: name,
-          speciality: speciality,
+          specialty: specialty,
           id: id
         ),
       _ => throw const FormatException('Failed to load technician.'),
@@ -34,7 +30,7 @@ class Technician{
         name: json['fullName'],
         email: json['email'],
         phone: json['phone'],
-        speciality: json["skills"],
+        specialty: json["skills"],
         experience: json['experience'],
         educationLevel: json['educationLevel'],
         additionalBio: json['additionalBio'], 
@@ -47,7 +43,7 @@ class Technician{
     return ( 
       { 
       "fullName": name,
-      "skills": speciality,
+      "skills": specialty,
       "email": email,
       "password": password,
       "phone": phone,

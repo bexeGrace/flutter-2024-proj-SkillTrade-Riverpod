@@ -84,7 +84,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
           const SizedBox(height: 7),
           InfoLabel(label: "Email", data: widget.technician.email),
           const SizedBox(height: 7),
-          InfoLabel(label: "Speciality", data: widget.technician.speciality),
+          InfoLabel(label: "Speciality", data: widget.technician.specialty),
           const SizedBox(height: 7),
           InfoLabel(label: "Phone", data: widget.technician.phone),
           const SizedBox(height: 20),

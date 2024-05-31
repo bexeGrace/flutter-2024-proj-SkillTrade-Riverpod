@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     // Icon(Icons.handyman_outlined, size: 75,),
-                    Container(
+                    SizedBox(
                       height: 100,
                       child: Image.asset('assets/logo.jpg'),
                     ),
