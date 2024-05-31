@@ -1,61 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/bookings_state.dart';
+import 'package:skill_trade/domain/models/booking.dart';
 import 'package:skill_trade/presentation/widgets/customer_booking.dart';
-import 'package:skill_trade/riverpod/booking_provider.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 
-class CustomerBookings extends ConsumerStatefulWidget {
-  const CustomerBookings({super.key});
+
+class CustomerBookings extends ConsumerWidget {
+  CustomerBookings({super.key});
 
   @override
-  _CustomerBookingsState createState() => _CustomerBookingsState();
-}
-
-class _CustomerBookingsState extends ConsumerState<CustomerBookings> {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bookingProvider.notifier).fetchBookings();
+  Widget build(BuildContext context, ref) {
+    
+    final bookingsState = ref.watch(bookingsNotifierProvider);
+    return Consumer(builder: (context, ref, child){
+      if (bookingsState is BookingsLoading){
+            return const Center(child: CircularProgressIndicator());
+          } else if (bookingsState is BookingsLoaded) {
+            final List<Booking> bookings = bookingsState.bookings.reversed.toList();
+          
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) { 
+                final technicianAsync = ref.watch(individualTechnicianFutureProvider(bookings[index].technicianId));
+               
+                return technicianAsync.when(data: (technician){
+                  return CustomerBooking(
+                        technician: technician,
+                        booking: bookings[index],
+                      );
+                },
+                 error: (error, StackTrace) => Text("errror ${error.toString()}"),
+                 loading: () => Center(child: CircularProgressIndicator(),));
+                
+                
+              },
+              itemCount: bookings.length,
+            );
+          } else if (bookingsState is BookingsError) {
+            return Center(child: Text(bookingsState.error));
+          } else {
+            return Container();
+          }
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    final bookingState = ref.watch(bookingProvider);
-
-    if (bookingState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    } else if (bookingState.errorMessage != null) {
-      return Center(child: Text(bookingState.errorMessage!));
-    } else {
-      return ListView.builder(
-        itemCount: bookingState.bookings.length,
-        itemBuilder: (context, index) {
-          final booking = bookingState.bookings[index];
-
-          return Consumer(
-            builder: (context, watch, _) {
-              final technicianAsync = ref.watch(technicianByIdProvider(booking.technicianId));
-
-              return technicianAsync.when(
-                data: (technician) {
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: CustomerBooking(
-                      technician: technician,
-                      booking: booking,
-                    ),
-                  );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(child: Text('Error loading technician: $error')),
-              );
-            },
-          );
-        },
-      );
-    }
-  }
 }
+

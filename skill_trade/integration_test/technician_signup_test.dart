@@ -7,7 +7,7 @@ import 'package:skill_trade/presentation/screens/home_page.dart';
 import 'package:skill_trade/presentation/screens/login_page.dart';
 import 'package:skill_trade/presentation/screens/signup_page.dart';
 import 'package:skill_trade/presentation/widgets/technician_application.dart';
-import 'package:skill_trade/technician.dart';
+import 'package:skill_trade/presentation/screens/technician.dart';
 
 // class MockAuthBloc extends Mock implements AuthBloc {}
 void main() async {
@@ -15,7 +15,7 @@ void main() async {
 
   group('Technician Signup', () {
     testWidgets('Technician Signup', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget( MyApp());
       await tester.pumpAndSettle();
 
       // Wait for the app to settle
@@ -88,7 +88,7 @@ void main() async {
   });
   group('Technician Login Tests', () {
     testWidgets('Technician Login', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp());
       await tester.pumpAndSettle();
 
       await tester.pumpAndSettle();

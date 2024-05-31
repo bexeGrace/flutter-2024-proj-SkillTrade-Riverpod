@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/auth_state.dart';
 import 'package:skill_trade/presentation/widgets/my_button.dart';
 import 'package:skill_trade/presentation/widgets/my_textfield.dart';
-import 'package:skill_trade/riverpod/auth_provider.dart';
+
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -16,26 +18,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _selectedRole = "Customer";
+  String _selectedRole = "customer";
 
   @override
   void initState() {
     super.initState();
-    _selectedRole = 'Customer';
+    _selectedRole = 'customer';
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: authState.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Center(
+      body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
               Card(
+                // color: Colors.white,
                 color: Theme.of(context).colorScheme.background,
                 margin: const EdgeInsets.all(10),
                 elevation: 20,
@@ -54,11 +54,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         const SizedBox(
                           height: 35,
-                        ),
-                        if (authState.errorMessage != null)
-                        Text(
-                          authState.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
                         ),
                         MyTextField(
                             labelText: "email",
@@ -121,20 +116,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             text: "login",
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                await ref.read(authProvider.notifier).signin(_selectedRole, _emailController.text, _passwordController.text);
-                                final auth = ref.watch(authProvider);
-                                if (auth.isAuthenticated){
-                                  if (auth.role == "customer"){ 
-                                    context.push(
-                                      "/customer");
-                                  } else if (auth.role == "technician"){ 
-                                    context.push(
-                                      "/technician");
+                                final authNotifier = ref.read(authNotifierProvider.notifier);
+                                await authNotifier.logIn(
+                                  _selectedRole,
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
+                                final authState = ref.read(authNotifierProvider);
 
-                                  } else if(auth.role == "admin"){ 
-                                    context.push(
-                                      "/admin");
-                                  }
+                                if (authState is AuthError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(authState.error),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text( 'Successfully logged in!'),
+                                    ),
+                                  );
+                                  GoRouter.of(context).go('/');
                                 }
                               }
                             },
@@ -152,16 +154,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  context.push("/signup");
+                                  context.go("/signup");
                                 },
-                                child: Text(
-                                  "Sign up",
-                                  style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.purple.shade300
-                                  )
-                                )
-                              )
+                                child: Text("Sign up",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.purple.shade300)))
                           ],
                         )
                       ],
@@ -175,4 +173,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       ),
     );
   }
+  
+
 }

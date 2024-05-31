@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/booking.dart';
-import 'package:skill_trade/models/technician.dart';
+import 'package:skill_trade/application/notifiers/bookings_notifier.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/bookings_state.dart';
+import 'package:skill_trade/application/states/customer_state.dart';
+import 'package:skill_trade/domain/models/booking.dart';
+import 'package:skill_trade/domain/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/editable_textfield.dart';
 import 'package:skill_trade/presentation/widgets/info_label.dart';
-import 'package:skill_trade/riverpod/booking_provider.dart';
 
 class CustomerBooking extends ConsumerStatefulWidget {
   final Booking booking;
   final Technician technician;
-
+// 
   CustomerBooking({
     Key? key,
     required this.booking,
@@ -34,6 +37,7 @@ class CustomerBooking extends ConsumerStatefulWidget {
 class _CustomerBookingState extends ConsumerState<CustomerBooking> {
   String? statusMessage;
   Color? statusColor;
+  
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -51,8 +55,10 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
 
   @override
   Widget build(BuildContext context) {
-    final bookingState = ref.watch(bookingProvider);
-    final bookingNotifier = ref.read(bookingProvider.notifier);
+    final bookingState = ref.watch(bookingsNotifierProvider);
+    final bookingNotifier = ref.read(bookingsNotifierProvider.notifier);
+    final customerState = ref.watch(customerNotifierProvider);
+
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -69,7 +75,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 15),
-          bookingState.isLoading
+          bookingState is BookingsLoading
               ? const CircularProgressIndicator()
               : Text(
                   widget.technician.name,
@@ -84,7 +90,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
           const SizedBox(height: 7),
           InfoLabel(label: "Email", data: widget.technician.email),
           const SizedBox(height: 7),
-          InfoLabel(label: "Speciality", data: widget.technician.specialty),
+          InfoLabel(label: "Speciality", data: widget.technician.skills),
           const SizedBox(height: 7),
           InfoLabel(label: "Phone", data: widget.technician.phone),
           const SizedBox(height: 20),
@@ -138,13 +144,13 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  await editBooking(bookingNotifier, widget.booking.id);
+                  await editBooking(bookingNotifier, customerState, widget.booking.id);
                   setState(() {
-                    if (bookingState.isSuccess) {
+                    if (bookingState is BookingsLoaded) {
                       statusMessage = 'Booking updated successfully!';
                       statusColor = Colors.green;
-                    } else if (bookingState.errorMessage != null) {
-                      statusMessage = 'Error: ${bookingState.errorMessage}';
+                    } else if (bookingState is BookingsError != null) {
+                      statusMessage = 'Error: ';
                       statusColor = Colors.red;
                     }
                   });
@@ -162,13 +168,13 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
-                  await deleteBooking(bookingNotifier, widget.booking.id);
+                  await deleteBooking(bookingNotifier, customerState,  widget.booking.id);
                   setState(() {
-                    if (bookingState.isSuccess) {
+                    if (bookingState is BookingsLoaded) {
                       statusMessage = 'Booking deleted successfully!';
                       statusColor = Colors.green;
-                    } else if (bookingState.errorMessage != null) {
-                      statusMessage = 'Error: ${bookingState.errorMessage}';
+                    } else if (bookingState is BookingsError != null) {
+                      statusMessage = 'Error';
                       statusColor = Colors.red;
                     }
                   });
@@ -188,17 +194,22 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
     );
   }
 
-  Future<void> editBooking(BookingsNotifier provider, int bookingId) async {
+  Future<void> editBooking(BookingsNotifier provider, customerState, int bookingId) async {
     final updatedData = {
       "serviceNeeded": widget._controllers["serviceNeeded"]?.text,
       "problemDescription": widget._controllers["problemDescription"]?.text,
       "serviceLocation": widget._controllers["serviceLocation"]?.text,
       "serviceDate": widget._selectedDate.toString().substring(0, 10),
     };
-    await provider.updateBooking(updatedData, bookingId);
+    if (customerState is CustomerLoaded){
+    provider.updateBooking(bookingId: bookingId, updates: updatedData, whoUpdated: "customer", updaterId: customerState.customer.id);
+
+    }
+    
   }
 
-  Future<void> deleteBooking(BookingsNotifier provider, int bookingId) async {
-    await provider.deleteBooking(bookingId);
-  }
+  Future<void> deleteBooking(BookingsNotifier provider, customerState, int bookingId) async {
+    if (customerState is CustomerLoaded){
+    await provider.deleteBooking(bookingId: bookingId, customerId: customerState.customer.id);
+  }}
 }

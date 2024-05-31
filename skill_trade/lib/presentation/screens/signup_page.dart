@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:skill_trade/presentation/themes.dart';
+import 'package:skill_trade/application/providers/providers.dart';
 import 'package:skill_trade/presentation/widgets/my_button.dart';
 import 'package:skill_trade/presentation/widgets/my_textfield.dart';
-import 'package:skill_trade/riverpod/auth_provider.dart';
+
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
@@ -13,21 +13,21 @@ class SignupPage extends ConsumerStatefulWidget {
 }
 
 class _SignupPageState extends ConsumerState<SignupPage> {
-  String userRole = "customer";
+  String _user_role = "customer";
   Color _borderColor1 = Colors.blue;
   Color _borderColor2 = Colors.black;
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _experienceController = TextEditingController();
-  final TextEditingController _educationController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
+  TextEditingController _fullNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _experienceController = TextEditingController();
+  TextEditingController _educationController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _bioController = TextEditingController();
 
-  final List<String> _selectedTags = [];
+  List<String> _selectedTags = [];
 
-  final List<String> _availableTags = [
+  List<String> _availableTags = [
     'Electricity',
     'HVAC',
     'Satelite dish',
@@ -40,22 +40,16 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   bool _noSkillChosen = false;
 
   @override
-  void initState(){ 
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final authNotifier = ref.read(authProvider.notifier);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.read(authNotifierProvider);
+    
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(top: 20, bottom: 20),
-          child: authState.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+          child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -104,7 +98,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      userRole = "customer";
+                                      _user_role = "customer";
                                       _borderColor1 = Colors.blue;
                                       _borderColor2 = Colors.black;
                                     });
@@ -131,7 +125,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      userRole = "technician";
+                                      _user_role = "technician";
                                       _borderColor2 = Colors.blue;
                                       _borderColor1 = Colors.black;
                                     });
@@ -146,11 +140,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                               ],
                             )
                           ],
-                        ),
-                        if (authState.errorMessage != null)
-                        Text(
-                          authState.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
                         ),
                         Form(
                             key: _formKey,
@@ -194,7 +183,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 const SizedBox(
                                   height: 15,
                                 ),
-                                if (userRole == "technician") ...[
+                                if (_user_role == "technician") ...[
                                   MyTextField(
                                       labelText: "Experience",
                                       prefixIcon: Icons.timelapse_sharp,
@@ -320,108 +309,33 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                   ),
                                   MyButton(
                                       text: "Apply",
-                                      onPressed: () async {
+                                      onPressed: () {
                                         if (_formKey.currentState!.validate()) {
                                           if (_selectedTags.isNotEmpty) {
-                                            
-                                              final technician = {
-                                              "fullName": _fullNameController.value.text,
-                                              "role": "technician", 
-                                              "skills": _selectedTags.join(", "),
-                                              "email": _emailController.value.text,
-                                              "phone": _phoneController.value.text,
-                                              "experience": _experienceController.value.text,
-                                              "availableLocation":_locationController.value.text,
-                                              "password": _passwordController.value.text,
-                                              "additionalBio": _bioController.value.text,
-                                              "educationLevel": _educationController.value.text
-
-                                              };
-                                            await authNotifier.signup(
-                                               technician
-                                              );
-
-
-                                           final auth = ref.watch(authProvider);
-                                            if (auth.success) {
-                                             ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  backgroundColor: lightMode.primaryColorLight,
-                                                  content: const Text('Sign up successful'),
-                                                ),
-                                              );
-                                            } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  backgroundColor: lightMode.primaryColorLight,
-                                                  content: Text(auth.errorMessage ?? 'Sign up failed'),
-                                                ),
-                                              );
-                                            }
-                                            if (auth.isAuthenticated) {
-                                              context.push('/technician');
-                                            }
-                                            
-                                        
-
+                                            signUpTechnician();
                                           } else {
                                             setState(() {
                                               _noSkillChosen = true;
                                             });
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                              SnackBar(
-                                                  backgroundColor: lightMode.primaryColorLight,
-                                                  content: const Text(
+                                              const SnackBar(
+                                                  content: Text(
                                                       'You have to choose at least one skill.')),
                                             );
                                           }
-
                                         }
                                       },
                                       width: double.infinity),
                                 ],
-                                if (userRole == "customer") ...[
+                                if (_user_role == "customer") ...[
                                   const SizedBox(
                                     height: 15,
                                   ),
                                   MyButton(
                                       text: "signup",
-                                      onPressed: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          final customer = {
-                                            "fullName": _fullNameController.value.text, 
-                                              "email": _emailController.value.text,
-                                              "phone": _phoneController.value.text,
-                                              "password": _passwordController.value.text,
-                                              "role": "customer"
-                                          };
-
-
-                                              if (!authState.success) {
-                                                await authNotifier.signup(customer);
-                                              }
-                                             final auth = ref.watch(authProvider);
-                                            if (auth.success) {
-                                             ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  backgroundColor: lightMode.primaryColorLight,
-                                                  content: const Text( 'Sign up successful'),
-                                                ),
-                                              );
-                                            } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(auth.errorMessage ?? 'Sign up failed'),
-                                                ),
-                                              );
-                                            }
-                                            if (auth.isAuthenticated) {
-                                              context.push('/customer');
-                                            }
-                                         
-                                              
-                                        }
+                                      onPressed: (){
+                                        signUpCustomer();
                                       },
                                       width: double.infinity),
                                 ],
@@ -440,7 +354,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  context.push("/login");
+                                  context.go("/login");
                                 },
                                 child: Text("Login",
                                     style: TextStyle(
@@ -458,5 +372,20 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         ),
       ),
     );
+  }
+  
+  void signUpCustomer() async{
+    if (_formKey.currentState!.validate()) {   
+      await ref.read(authNotifierProvider.notifier).signUpCustomer(_emailController.text,  _passwordController.text, _phoneController.text, _fullNameController.text); 
+
+      // await ref.read(bookingsNotifierProvider.notifier).loadCustomerBookings();
+
+      GoRouter.of(context).go('/');
+    }
+  }
+  
+  void signUpTechnician()async {
+    await ref.read(authNotifierProvider.notifier).signUpTechnician(_emailController.text, _passwordController.text, _phoneController.text, _fullNameController.text, _selectedTags.join(", "), _experienceController.text, _educationController.text, _locationController.text, _bioController.text);
+    context.go("/apply");
   }
 }

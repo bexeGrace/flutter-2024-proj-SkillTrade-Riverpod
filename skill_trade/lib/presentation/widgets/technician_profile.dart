@@ -1,99 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/technician.dart';
+import 'package:skill_trade/domain/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/info_label.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 
-class TechnicianSmallProfile extends ConsumerWidget {
+class TechnicianSmallProfile extends StatelessWidget {
   final Technician technician;
   const TechnicianSmallProfile({super.key, required this.technician});
 
   @override
-  Widget build(BuildContext context, ref) {
-    final asyncValueTechnician =
-        ref.watch(technicianByIdProvider(technician.id));
-    return asyncValueTechnician.when(
-        data: (tech) {
-          return Column(
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Image.asset(
+          "assets/technician.png",
+          width: 125,
+          height: 125,
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Text(
+          technician.name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 10,
+              InfoLabel(label: "Email", data: technician.email),
+               const SizedBox(
+                height: 3,
               ),
-              const SizedBox(
-                height: 20,
+              InfoLabel(label: "Phone", data: technician.phone),
+               const SizedBox(
+                height: 3,
               ),
-              Image.asset(
-                "assets/technician.png",
-                width: 125,
-                height: 125,
+              InfoLabel(label: "Skills", data: technician.skills),
+               const SizedBox(
+                height: 3,
               ),
-              const SizedBox(
-                height: 5,
+              InfoLabel(
+                  label: "Experience",
+                  data: technician.experience),
+               const SizedBox(
+                height: 3,
               ),
-              Text(
-                technician.name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              InfoLabel(
+                  label: "Education Level",
+                  data: technician.education_level),
+               const SizedBox(
+                height: 3,
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InfoLabel(
-                        label: "Email",
-                        data: tech.email), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Phone", data: tech.phone), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Skills",
-                        data:
-                            tech.specialty), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Experience",
-                        data: tech
-                            .experience), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Education Level",
-                        data: tech
-                            .educationLevel), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Available Location",
-                        data: tech.availableLocation), 
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    InfoLabel(
-                        label: "Additional Bio",
-                        data: tech.additionalBio),
-                  ],
-                ),
-              )
+              InfoLabel(label: "Available Location", data: technician.available_location),
+               const SizedBox(
+                height: 3,
+              ),
+              InfoLabel(label: "Additional Bio", data: technician.additional_bio),
+              InfoLabel(label: "Status", data: technician.status),
             ],
-          );
-        },
-        loading: () => const CircularProgressIndicator(),
-        error: (error, stackTrace) => Center(
-              child: Text('Error loading technician: $error'),
-            ));
+          ),
+        )
+      ],
+    );
   }
 }

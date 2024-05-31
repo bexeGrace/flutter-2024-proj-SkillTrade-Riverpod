@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skill_trade/models/customer.dart';
+import 'package:skill_trade/domain/models/customer.dart';
 import 'package:skill_trade/presentation/widgets/info_label.dart';
 
 class customerProfile extends StatelessWidget {

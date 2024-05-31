@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/find_technician_state.dart';
+import 'package:skill_trade/domain/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/technician_tile.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: AdminPage(),
-  ));
-}
 
 class AdminPage extends ConsumerWidget {
   const AdminPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final pendingTechs = ref.watch(pendingTechniciansProvider);
+    final pendingTechnicianState = ref.watch(techniciansNotifierProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,21 +26,27 @@ class AdminPage extends ConsumerWidget {
           ),
         ),
         Expanded(
-          child: pendingTechs.when( 
-            data: (techs){
-              return techs.isNotEmpty? 
-              ListView.builder(
+          child: Consumer( 
+            builder: (context, ref, child) {
+              if (pendingTechnicianState is TechniciansLoading){
+                return const Center(child: CircularProgressIndicator());
+              } else if (pendingTechnicianState is TechniciansLoaded && pendingTechnicianState.pendingTechnicians != null) {
+                final List<Technician> technicians = pendingTechnicianState.pendingTechnicians;
+                return technicians.isNotEmpty? ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
-                    return TechnicianTile(technician: techs[index]);
+                    return TechnicianTile(technician: technicians[index]);
                   },
-                itemCount: techs.length,
+                itemCount: technicians.length,
                 ): const Center(child: Text("No pending applications"),);
-
+              } else if (pendingTechnicianState is TechniciansError) {
+                return Center(child: Text(pendingTechnicianState.error));
+              } else {
+                return Container();
+              }
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: ((error, stackTrace) => Text("Error loading technician applications.${error}"))
-          )
-        ),
+          ),
+          ),
+        
       ],
     );
   }

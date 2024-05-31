@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/technician.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/customer_state.dart';
+import 'package:skill_trade/application/states/review_state.dart';
+import 'package:skill_trade/domain/models/review.dart';
+import 'package:skill_trade/domain/models/technician.dart';
 import 'package:skill_trade/presentation/widgets/editable_textfield.dart';
 import 'package:skill_trade/presentation/widgets/technician_profile.dart';
 import 'package:skill_trade/presentation/widgets/rating_stars.dart';
-import 'package:skill_trade/riverpod/booking_provider.dart';
-import 'package:skill_trade/riverpod/customer_provider.dart';
-import 'package:skill_trade/riverpod/review_provider.dart';
+import 'package:skill_trade/infrastructure/storage/storage.dart';
 
 class MyBookings extends ConsumerStatefulWidget {
   final Technician technician;
@@ -18,7 +20,20 @@ class MyBookings extends ConsumerStatefulWidget {
 }
 
 class _MyBookingsState extends ConsumerState<MyBookings> {
-  late DateTime? _selectedDate;
+  DateTime? _selectedDate;
+  double _rating = 0;
+  final TextEditingController _reviewController = TextEditingController();
+  final TextEditingController serviceNeededController = TextEditingController();
+  final TextEditingController serviceLocationController = TextEditingController();
+  final TextEditingController problemDescriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(reviewsNotifierProvider.notifier).loadTechnicianReviews(widget.technician.id);
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -34,291 +49,241 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
     }
   }
 
-  double _rating = 0;
-  String _review = '';
-  final TextEditingController _reviewController = TextEditingController();
-  TextEditingController serviceNeededController = TextEditingController();
-  TextEditingController serviceLocationController = TextEditingController();
-  TextEditingController problemDescriptionController = TextEditingController();  
-
   void _submitReview() async {
+    final customerId = int.tryParse((await SecureStorage.instance.read("id"))!)!;
+    ref.read(reviewsNotifierProvider.notifier).postReview(
+      technicianId: widget.technician.id,
+      review: _reviewController.text,
+      rate: _rating,
+      customerId: customerId,
+    );
+    ref.read(reviewsNotifierProvider.notifier).loadTechnicianReviews(widget.technician.id);
 
-    // _reviews.add(newReview);
-    ref.read(reviewProvider.notifier).createReview(widget.technician.id, _review, _rating );
-    ref.read(reviewProvider.notifier).fetchReviews(widget.technician.id);
-        
+    _reviewController.clear();
     setState(() {
       _rating = 0;
-      _review = '';
-      _reviewController.clear();
-    });
-    
-  }
-
-  @override
-  void initState(){
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(customerNotifierProvider.notifier).fetchProfile();
-      ref.read(reviewProvider.notifier).fetchReviews(widget.technician.id);
     });
   }
 
-  void submitBooking() {
-    final booking = {
-      "problemDescription": problemDescriptionController.text,
-      "technicianId": widget.technician.id, 
-      "serviceNeeded": serviceNeededController.text, 
-      "serviceDate": _selectedDate.toString().substring(0, 10),
-      "serviceLocation": serviceLocationController.text
-    };
-    ref.watch(bookingProvider.notifier).createBooking(booking);
-
+  void submitBooking() async {
+    final customerId = int.tryParse((await SecureStorage.instance.read("id"))!)!;
+    ref.read(bookingsNotifierProvider.notifier).postBooking(
+      problemDescription: problemDescriptionController.text,
+      customerId: customerId,
+      technicianId: widget.technician.id,
+      serviceNeeded: serviceNeededController.text,
+      serviceDate: _selectedDate!,
+      serviceLocation: serviceLocationController.text,
+    );
     serviceNeededController.clear();
     serviceLocationController.clear();
     problemDescriptionController.clear();
     setState(() {
-        _selectedDate = null;
+      _selectedDate = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final bookingState = ref.watch(bookingProvider);
-    final reviewState = ref.watch(reviewProvider);
-    ref.watch(customerNotifierProvider);
+    final customerState = ref.watch(customerNotifierProvider);
+    final reviewsState = ref.watch(reviewsNotifierProvider);
 
     return Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "Technician",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            centerTitle: true,
+      appBar: AppBar(
+        title: const Text(
+          "Technician",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
-          body: ListView(
-            children: [
-              TechnicianSmallProfile(technician: widget.technician,),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Divider(
-                  thickness: 1,
-                  color: Colors.black,
-                ),
-              ),
-              const Text(
-                "Book Service",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
-                ),
-              ),
-              if(bookingState.isLoading)
-                const Center(child: CircularProgressIndicator(),)
-              else Container(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                child: Column(
+        ),
+        centerTitle: true,
+      ),
+      body: ListView(
+        children: [
+          TechnicianSmallProfile(technician: widget.technician),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Divider(
+              thickness: 1,
+              color: Colors.black,
+            ),
+          ),
+          const Text(
+            "Book Service",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Service \nDate:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _selectedDate == null
-                                  ? 'No date selected'
-                                  : _selectedDate.toString().substring(0, 10),
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
-                            ),
-                            TextButton(
-                              onPressed: () => _selectDate(context),
-                              child: const Text('Select Date'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Service \nNeeded:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        SizedBox(
-                          width: 220,
-                          height: 40,
-                          child: TextField(
-                            controller: serviceNeededController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Service \nLocation:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        SizedBox(
-                          width: 220,
-                          height: 40,
-                          child: TextField(
-                            controller: serviceLocationController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Problem \nDescription:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        SizedBox(
-                          width: 220,
-                          height: 60,
-                          child: TextField(
-                            controller: problemDescriptionController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      width: 250,
-                      child:  TextButton(
-                          onPressed:(){
-
-                            submitBooking();
-                            ref.watch(bookingProvider);
-                            if (bookingState.isSuccess) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Booking created successfully!')),
-                              );
-                              // Optionally, navigate to another page
-                            } else if (bookingState.errorMessage != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error: ${bookingState.errorMessage}')),
-                              );
-                            }
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
-                          ),
-                          child: const Text(
-                            "Book",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                    const Text(
+                      "Service \nDate:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedDate == null
+                              ? 'No date selected'
+                              : '${_selectedDate.toString().substring(0, 10)}',
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w500),
+                        ),
+                        TextButton(
+                          onPressed: () => _selectDate(context),
+                          child: const Text('Select Date'),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Divider(
-                  thickness: 1,
-                  color: Colors.black,
-                ),
-              ),
-        
-              // Review //
-        
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Previous reviews
                     const Text(
-                      'Reviews',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      "Service \nNeeded:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    if(reviewState.isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else if(reviewState.isSuccess) ...[
-                      reviewState.reviews.isEmpty ?
-                          const Text(
-                            "No reviews yet!",
-                          )
-                      : SizedBox(
-                            height: reviewState.reviews.length * 110,
+                    const SizedBox(width: 7),
+                    SizedBox(
+                      width: 220,
+                      height: 40,
+                      child: TextField(
+                        controller: serviceNeededController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Service \nLocation:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    SizedBox(
+                      width: 220,
+                      height: 40,
+                      child: TextField(
+                        controller: serviceLocationController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Problem \nDescription:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    SizedBox(
+                      width: 220,
+                      height: 60,
+                      child: TextField(
+                        controller: problemDescriptionController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  width: 250,
+                  child: TextButton(
+                    onPressed: submitBooking,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).colorScheme.primary),
+                    ),
+                    child: const Text(
+                      "Book",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Divider(
+              thickness: 1,
+              color: Colors.black,
+            ),
+          ),
+          // This is the review section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Previous reviews
+                const Text(
+                  'Reviews',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                reviewsState is ReviewsLoaded
+                    ? reviewsState.reviews.isNotEmpty
+                        ? Container(
+                            height: reviewsState.reviews.length * 150.0,
                             child: ListView.builder(
-                              itemCount: reviewState.reviews.length,
+                              itemCount: reviewsState.reviews.length,
                               itemBuilder: (context, index) {
-                                final curReview = reviewState.reviews[index];
+                                Review curReview =
+                                    reviewsState.reviews[index];
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Image.asset(
                                           "assets/profile.jpg",
                                           width: 40,
                                           height: 40,
                                         ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
+                                        const SizedBox(width: 5),
                                         Text(
-                                          curReview.customer,
+                                          reviewsState.reviews[index].customer,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w500),
@@ -327,112 +292,130 @@ class _MyBookingsState extends ConsumerState<MyBookings> {
                                     ),
                                     ListTile(
                                       title: RatingStars(
-                                          rating: curReview.rating),
-                                      subtitle: Consumer( 
-                                        builder: (context, watch, child){
-                                          final customerState = ref.watch(customerNotifierProvider);
-
-                                            if (!customerState.isLoading) {
-
-                                              if (customerState.customer!.id == curReview.customerId) {
-                                                TextEditingController curController = TextEditingController();
-                                                curController.text = curReview.review;
-
-                                                return Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                          rating: reviewsState
+                                              .reviews[index].rating),
+                                      subtitle: customerState is CustomerLoaded
+                                          ? customerState.customer.id ==
+                                                  curReview.customerId
+                                              ? Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .center,
                                                   children: [
-                                                    EditableField(data: curReview.review, controller: curController, label: 'review,${curReview.id}',),
+                                                    EditableField(
+                                                      data: curReview.comment,
+                                                      controller:
+                                                          TextEditingController()
+                                                            ..text = curReview
+                                                                .comment,
+                                                      label:
+                                                          'review,${curReview.id},${widget.technician.id}',
+                                                    ),
                                                     IconButton(
                                                       onPressed: () {
-                                                        ref.read(reviewProvider.notifier).deleteReview(curReview.id, widget.technician.id);
-                                                      }, 
-                                                      icon: const Icon(Icons.delete, color: Colors.red, ))
+                                                        ref
+                                                            .read(
+                                                                reviewsNotifierProvider
+                                                                    .notifier)
+                                                            .deleteReview(
+                                                              reviewId:
+                                                                  curReview.id,
+                                                              technicianId: widget
+                                                                  .technician
+                                                                  .id,
+                                                            );
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                      ),
+                                                    )
                                                   ],
-                                                );
-                                              } else {
-                                                return Text(curReview.review);
-                                              }
-                                            } else {
-                                              return Text(curReview.review);
-                                            }
-                                        },
-                                      )
-                                    ),
+                                                )
+                                              : Text(curReview.comment)
+                                          : customerState is CustomerError
+                                              ? Text(
+                                                  "Error loading customer")
+                                              : const SizedBox.shrink(),
+                                    )
                                   ],
                                 );
                               },
                             ),
+                          )
+                        : const Text("No reviews yet!")
+                    : reviewsState is ReviewsError
+                        ? const Text("Error loading reviews")
+                        : const Center(
+                            child: CircularProgressIndicator(),
                           ),
-            
-
-                    ],
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Leave a Review',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                const SizedBox(height: 20),
+                const Text(
+                  'Leave a Review',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                // Star rating widget
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.star,
+                          color: _rating >= 1 ? Colors.orange : Colors.grey),
+                      onPressed: () => setState(() => _rating = 1),
                     ),
-                    const SizedBox(height: 10),
-                    // Star rating widget
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.star,
-                              color: _rating >= 1 ? Colors.orange : Colors.grey),
-                          onPressed: () => setState(() => _rating = 1),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.star,
-                              color: _rating >= 2 ? Colors.orange : Colors.grey),
-                          onPressed: () => setState(() => _rating = 2),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.star,
-                              color: _rating >= 3 ? Colors.orange : Colors.grey),
-                          onPressed: () => setState(() => _rating = 3),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.star,
-                              color: _rating >= 4 ? Colors.orange : Colors.grey),
-                          onPressed: () => setState(() => _rating = 4),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.star,
-                              color: _rating >= 5 ? Colors.orange : Colors.grey),
-                          onPressed: () => setState(() => _rating = 5),
-                        ),
-                      ],
+                    IconButton(
+                      icon: Icon(Icons.star,
+                          color: _rating >= 2 ? Colors.orange : Colors.grey),
+                      onPressed: () => setState(() => _rating = 2),
                     ),
-                    const SizedBox(height: 20),
-                    // Text input for review
-                    TextField(
-                      controller: _reviewController,
-                      onChanged: (value) => _review = value,
-                      maxLines: 5,
-                      decoration: const InputDecoration(
-                        hintText: 'Write your review here...',
-                        border: OutlineInputBorder(),
-                      ),
+                    IconButton(
+                      icon: Icon(Icons.star,
+                          color: _rating >= 3 ? Colors.orange : Colors.grey),
+                      onPressed: () => setState(() => _rating = 3),
                     ),
-                    const SizedBox(height: 20),
-                    // Submit button
-                    ElevatedButton(
-                      onPressed: _submitReview,
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
-                      ),
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    IconButton(
+                      icon: Icon(Icons.star,
+                          color: _rating >= 4 ? Colors.orange : Colors.grey),
+                      onPressed: () => setState(() => _rating = 4),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.star,
+                          color: _rating >= 5 ? Colors.orange : Colors.grey),
+                      onPressed: () => setState(() => _rating = 5),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                // Text input for review
+                TextField(
+                  controller: _reviewController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    hintText: 'Write your review here...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Submit button
+                ElevatedButton(
+                  onPressed: _submitReview,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).colorScheme.primary),
+                  ),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
     );
   }
 }

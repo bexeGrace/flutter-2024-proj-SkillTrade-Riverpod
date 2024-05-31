@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/admin.dart';
-import 'package:skill_trade/customer.dart';
-import 'package:skill_trade/models/customer.dart';
-import 'package:skill_trade/models/technician.dart';
+import 'package:go_router/go_router.dart';
+import 'package:skill_trade/application/providers/providers.dart';
+import 'package:skill_trade/application/states/auth_state.dart';
+import 'package:skill_trade/domain/models/customer.dart';
+import 'package:skill_trade/domain/models/technician.dart';
+import 'package:skill_trade/presentation/screens/admin.dart';
 import 'package:skill_trade/presentation/screens/admin_customer.dart';
 import 'package:skill_trade/presentation/screens/admin_technician.dart';
 import 'package:skill_trade/presentation/screens/bookings.dart';
+import 'package:skill_trade/presentation/screens/customer.dart';
 import 'package:skill_trade/presentation/screens/home_page.dart';
 import 'package:skill_trade/presentation/screens/login_page.dart';
 import 'package:skill_trade/presentation/screens/signup_page.dart';
+import 'package:skill_trade/presentation/screens/technician.dart';
 import 'package:skill_trade/presentation/screens/technician_application_success.dart';
 import 'package:skill_trade/presentation/themes.dart';
-import 'package:skill_trade/technician.dart';
-import 'package:skill_trade/riverpod/auth_provider.dart';
-import 'package:go_router/go_router.dart';
 
-void main() {
-  runApp(const ProviderScope(
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+ 
+  runApp(ProviderScope(
     child: MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-        title: 'Flutter Demo',
-        theme: lightMode,
-        debugShowCheckedModeBanner: false,
-        routerConfig: _router);
+      title: 'Flutter Demo',
+      theme: lightMode,
+      debugShowCheckedModeBanner: false,
+      routerConfig: _router,
+    );
   }
 }
 
@@ -46,9 +47,7 @@ final GoRouter _router = GoRouter(
       path: '/admintech',
       builder: (context, state) {
         final technicianId = state.extra as int;
-        return AdminTechnician(
-          technicianId: technicianId,
-        );
+        return AdminTechnician(technicianId: technicianId);
       },
     ),
     GoRoute(
@@ -107,25 +106,27 @@ class GetFirstPageLogic {
   }
 }
 
-class GetFirstPage extends StatelessWidget {
-  const GetFirstPage({Key? key}) : super(key: key);
+class GetFirstPage extends ConsumerWidget {
+  const GetFirstPage({super.key});
+Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authNotifierProvider);
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        ref.read(authProvider.notifier);
-        final authState = ref.watch(authProvider);
+    return _buildPage(authState);
+  }
 
-        print(
-            "main says token ${authState.token} auth ${authState.isAuthenticated}");
-
-        if (authState.isAuthenticated) {
-          return GetFirstPageLogic().getLoggedInPage(authState.role!);
-        } else {
-          return const HomeScreen();
-        }
-      },
-    );
+  Widget _buildPage(AuthState authState) {
+    if (authState is UnLogged) {
+      return const HomeScreen();
+    } else if (authState is LoggedIn) {
+      return GetFirstPageLogic().getLoggedInPage(authState.role!);
+    } else if (authState is SignUpState) {
+      return const HomeScreen(); 
+    } else if (authState is AuthError) {
+      return const HomeScreen(); 
+    } else if (authState is AuthSuccess) {
+      return const HomeScreen(); 
+    } else {
+      return const SizedBox(); 
+    }
   }
 }

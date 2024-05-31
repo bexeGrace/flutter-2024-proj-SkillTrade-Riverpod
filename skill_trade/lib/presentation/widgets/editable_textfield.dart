@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/riverpod/review_provider.dart';
+import 'package:skill_trade/application/providers/providers.dart';
 
 class EditableField extends StatefulWidget {
   final String label;
@@ -53,9 +53,13 @@ class _EditableFieldState extends State<EditableField> {
                   icon: Icon(isEditing ? Icons.check : Icons.edit),
                   onPressed: () {
                     if (widget.label.split(',')[0] == "review" && isEditing) {
-                      ref.read(reviewProvider.notifier).updateReview(
-                          {"review": widget.controller!.text},
-                          int.parse(widget.label.split(",")[1]));
+                      ref.read(reviewsNotifierProvider.notifier).updateReview(
+                         reviewId: int.parse(widget.label.split(",")[1]),
+                        updates: {"review": widget.controller!.text},
+                        technicianId: int.parse(
+                          widget.label.split(",")[2],
+                        )
+                      );
                     }
                     setState(() {
                       isEditing = !isEditing;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/customer.dart';
+import 'package:skill_trade/domain/models/customer.dart';
 import 'package:skill_trade/presentation/widgets/customer_profile.dart';
 
 class AdminCustomer extends ConsumerWidget {
