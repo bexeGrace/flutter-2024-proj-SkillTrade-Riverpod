@@ -22,7 +22,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void initState() {
     super.initState();
     _selectedRole = 'Customer';
-    // ref.read(authProvider.notifier)._loadToken();
   }
 
   @override
@@ -37,7 +36,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             children: [
               Card(
-                // color: Colors.white,
                 color: Theme.of(context).colorScheme.background,
                 margin: const EdgeInsets.all(10),
                 elevation: 20,
@@ -83,7 +81,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           height: 15,
                         ),
                         Row(
-                          // mainAxisAlignment: MainAxisAlignment.,
                           children: [
                             Radio<String>(
                               value: 'customer',
@@ -95,7 +92,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               },
                             ),
                             const Text('Customer'),
-                            // SizedBox(width: 15,),
                             Radio<String>(
                               value: 'technician',
                               groupValue: _selectedRole,
@@ -106,7 +102,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               },
                             ),
                             const Text('Technician'),
-                            // SizedBox(width: 15,),
                             Radio<String>(
                               value: 'admin',
                               groupValue: _selectedRole,

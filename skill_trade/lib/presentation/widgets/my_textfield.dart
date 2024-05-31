@@ -58,7 +58,6 @@ class _MyTextFieldState extends State<MyTextField> {
     return TextFormField(
       controller: widget.controller,
       obscureText: _obscure,
-      // onChanged: widget.onChanged,
       style: const TextStyle(
         color: Colors.black87,
         fontSize: 16.0,

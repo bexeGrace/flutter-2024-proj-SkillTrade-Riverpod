@@ -57,7 +57,6 @@ class FindTechnician extends ConsumerWidget {
                     },
                     itemCount: technicians.length,
 
-                    // }),
                   );
               },
             error: (error, s) => Text(error.toString()),

@@ -41,7 +41,6 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Icon(Icons.handyman_outlined, size: 75,),
                     SizedBox(
                       height: 100,
                       child: Image.asset('assets/logo.jpg'),
@@ -93,7 +92,6 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
-              // Divider(),
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Find Skilled Technicians for Your Home Services",
