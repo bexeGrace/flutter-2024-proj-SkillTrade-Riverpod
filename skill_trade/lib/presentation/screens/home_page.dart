@@ -1,16 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:skill_trade/customer.dart';
-import 'package:skill_trade/presentation/screens/login_page.dart';
-import 'package:skill_trade/presentation/screens/signup_page.dart';
 import 'package:skill_trade/presentation/widgets/my_button.dart';
 import 'package:skill_trade/presentation/widgets/services_card.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   final List servicesCards = const [

@@ -22,6 +22,7 @@ class AdminCustomer extends ConsumerWidget {
           else
             customerProfile(customer: customer)
 
+<<<<<<< HEAD
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.center,
           //   children: [
@@ -57,6 +58,8 @@ class AdminCustomer extends ConsumerWidget {
           //   height: 30,
           // ),
           // const Padding(
+=======
+>>>>>>> 5068cd5fad880969f9959d294fa588da732ac77a
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skill_trade/models/booking.dart';
 import 'package:skill_trade/presentation/widgets/customer_booking.dart';
 import 'package:skill_trade/riverpod/booking_provider.dart';
 import 'package:skill_trade/riverpod/technician_provider.dart';
