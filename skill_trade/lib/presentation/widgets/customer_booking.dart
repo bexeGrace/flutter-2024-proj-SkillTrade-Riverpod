@@ -56,7 +56,7 @@ class _CustomerBookingState extends ConsumerState<CustomerBooking> {
 
     return Container(
       padding: EdgeInsets.all(20),
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(20),
