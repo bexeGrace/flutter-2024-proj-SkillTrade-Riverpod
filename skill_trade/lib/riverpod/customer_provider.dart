@@ -1,15 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:skill_trade/models/booking.dart';
 import 'package:skill_trade/models/customer.dart';
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skill_trade/riverpod/secure_storage_provider.dart';
-import 'package:skill_trade/riverpod/technician_provider.dart';
 
 import '../ip_info.dart';
 
-// FutureProvider to fetch customer by ID
 final customerByIdProvider = FutureProvider.family<Customer, int>((ref, customerId) async {
   final secureStorageService = ref.read(secureStorageProvider);
   final token = await secureStorageService.read("token");
@@ -31,7 +27,6 @@ final customerByIdProvider = FutureProvider.family<Customer, int>((ref, customer
   }
 });
 
-// FutureProvider to fetch the current customer's profile
 final customerProfileProvider = FutureProvider<Customer>((ref) async {
   final secureStorageService = ref.read(secureStorageProvider);
   final id = await secureStorageService.read('userId');
@@ -39,11 +34,8 @@ final customerProfileProvider = FutureProvider<Customer>((ref) async {
     throw Exception("No customer found");
   }
 
-  // Use customerByIdProvider with the retrieved user ID
   final customer = await ref.read(customerByIdProvider(int.parse(id)).future);
 
-  // Await the customer data from the async value
-  // final customer = await customerAsyncValue.future;
   return customer;
 });
 
@@ -53,7 +45,6 @@ final fetchAllCustomers = FutureProvider<List<Customer>>((ref) async {
   final secureStorageService = ref.read(secureStorageProvider);
 
   final token = await secureStorageService.read("token");
-  // print("token $token");
   final response = await http.get(
     Uri.parse("http://$endpoint:9000/customer"),
     headers: {
@@ -63,27 +54,14 @@ final fetchAllCustomers = FutureProvider<List<Customer>>((ref) async {
     },
   );
 
-  print("fetch all customers ${response.statusCode} $response");
 
   if (response.statusCode == 200) {
     final List<dynamic> data = jsonDecode(response.body);
-    print("fetched customers $data");
     return data.map((json) => Customer.fromJson(json)).toList();
   } else {
-    print(response.statusCode);
     throw Exception("Failed to load customers.");
   }
 });
-// final customerServiceProvider = Provider<CustomerService>((ref) {
-//   final secureStorageService = ref.read(secureStorageProvider);
-//   return CustomerService(secureStorageService);
-// });
-
-// final customerProfileProvider = FutureProvider<Customer>((ref) async {
-//   final customerService = ref.read(customerServiceProvider);
-//   return customerService.fetchProfile();
-// });
-
 
 class CustomerState {
   final Customer? customer;
@@ -165,7 +143,3 @@ final customerNotifierProvider = StateNotifierProvider<CustomerNotifier, Custome
   final secureStorageService = ref.read(secureStorageProvider);
   return CustomerNotifier(secureStorageService);
 });
-
-// final customerProfileProvider = Provider<void>((ref) {
-//   ref.read(customerNotifierProvider.notifier).fetchProfile();
-// });
